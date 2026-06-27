@@ -1,382 +1,688 @@
-<!DOCTYPE html>
+# ─────────────────────────────────────────────
+#  HAUS Store v2 — with real images & better colors
+#  Run: python generate_site.py
+#  Output: index.html
+# ─────────────────────────────────────────────
+
+# Unsplash source URLs — free, no attribution required for portfolio use
+# Format: https://source.unsplash.com/{photo_id}/{width}x{height}
+
+IMAGES = {
+    "hero":       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80&fit=crop",
+    "product_1":  "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80&fit=crop",
+    "product_2":  "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80&fit=crop",
+    "product_3":  "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&q=80&fit=crop",
+    "product_4":  "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80&fit=crop",
+    "editorial":  "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&q=80&fit=crop",
+    "cat_women":  "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=800&q=80&fit=crop",
+    "cat_men":    "https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=600&q=80&fit=crop",
+    "cat_acc":    "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80&fit=crop",
+    "cat_sale":   "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=600&q=80&fit=crop",
+}
+
+PRODUCTS = [
+    {"name": "Oversized Linen Shirt", "sub": "Sand · Stone · Chalk",
+     "price": "€89", "badge": "New", "badge_class": "",
+     "img": IMAGES["product_1"],
+     "swatches": ["#d4cfc7","#8c8880","#f0ede8"]},
+    {"name": "Wide Leg Trousers",     "sub": "Oat · Charcoal",
+     "price": "€115", "badge": None, "badge_class": "",
+     "img": IMAGES["product_2"],
+     "swatches": ["#e8e4dc","#3a3a38"]},
+    {"name": "Ribbed Knit Sweater",   "sub": "Ecru · Mocha · Slate",
+     "price": "€76", "old_price": "€95", "badge": "−20%", "badge_class": "sale",
+     "img": IMAGES["product_3"],
+     "swatches": ["#f2ede4","#7a5c42","#6e7478"]},
+    {"name": "Structured Tote",       "sub": "Tan · Black",
+     "price": "€145", "badge": "Limited", "badge_class": "",
+     "img": IMAGES["product_4"],
+     "swatches": ["#c4a882","#1a1a18"]},
+]
+
+SITE_NAME = "HAUS"
+TAGLINE   = "Wear What You Are"
+SEASON    = "Summer Collection 2025"
+
+
+def css():
+    return """<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ink:#141210;
+  --cream:#faf8f4;
+  --warm:#f0ebe0;
+  --sand:#e2dbd0;
+  --stone:#9e9890;
+  --gold:#b8935a;
+  --gold-light:#d4ae78;
+  --white:#ffffff;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 3rem;
+  transition:all 0.4s ease;
+}
+nav.scrolled{
+  background:rgba(250,248,244,0.95);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--sand);
+  padding:0.9rem 3rem;
+}
+.nav-links{display:flex;gap:2.2rem;}
+.nav-links a{font-size:11.5px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;opacity:0.55;transition:opacity 0.2s;}
+.nav-links a:hover{opacity:1;}
+.nav-logo{
+  font-family:'Playfair Display',serif;font-size:24px;
+  letter-spacing:7px;position:absolute;left:50%;transform:translateX(-50%);
+  color:var(--white);transition:color 0.4s;
+}
+nav.scrolled .nav-logo{color:var(--ink);}
+.nav-right{display:flex;gap:1.8rem;align-items:center;}
+.nav-right a{font-size:11.5px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--white);text-decoration:none;opacity:0.7;transition:all 0.4s;}
+nav.scrolled .nav-right a{color:var(--ink);}
+.nav-right a:hover{opacity:1;}
+.cart-badge{
+  background:var(--gold);color:var(--white);
+  font-size:9px;letter-spacing:1px;padding:3px 8px;
+  border-radius:20px;margin-left:4px;
+}
+
+/* HERO */
+.hero{
+  min-height:100vh;
+  display:grid;grid-template-columns:55% 45%;
+  position:relative;
+}
+.hero-img-side{
+  position:relative;overflow:hidden;
+}
+.hero-img-side img{
+  width:100%;height:100%;object-fit:cover;
+  filter:brightness(0.72);
+  transition:transform 8s ease;
+}
+.hero-img-side:hover img{transform:scale(1.04);}
+.hero-text-overlay{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:4rem 3.5rem;
+  background:linear-gradient(to top, rgba(14,12,8,0.75) 0%, rgba(14,12,8,0.1) 60%, transparent 100%);
+}
+.hero-eyebrow{
+  font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold-light);margin-bottom:1.2rem;
+}
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(48px,6vw,82px);
+  font-weight:400;line-height:0.93;
+  color:var(--white);margin-bottom:2rem;
+}
+.hero-title em{font-style:italic;color:var(--gold-light);}
+.hero-sub{
+  font-size:14px;color:rgba(255,255,255,0.6);
+  line-height:1.85;max-width:360px;margin-bottom:2.5rem;
+}
+.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-gold{
+  background:var(--gold);color:var(--white);
+  padding:14px 34px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:background 0.2s,transform 0.2s;
+}
+.btn-gold:hover{background:var(--gold-light);transform:translateY(-2px);}
+.btn-outline-w{
+  background:transparent;color:var(--white);
+  padding:14px 34px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,0.35);cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:border-color 0.2s;
+}
+.btn-outline-w:hover{border-color:var(--white);}
+.hero-right-panel{
+  background:var(--ink);
+  display:flex;flex-direction:column;
+}
+.hero-panel-img{
+  flex:1;position:relative;overflow:hidden;
+}
+.hero-panel-img img{
+  width:100%;height:100%;object-fit:cover;
+  opacity:0.45;
+  transition:transform 8s ease;
+}
+.hero-panel-img:hover img{transform:scale(1.05);}
+.hero-panel-content{
+  padding:2.5rem;border-top:1px solid rgba(255,255,255,0.08);
+}
+.hero-panel-label{
+  font-size:9px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1rem;
+}
+.hero-panel-title{
+  font-family:'Playfair Display',serif;font-size:22px;
+  color:var(--white);font-weight:400;margin-bottom:0.5rem;
+}
+.hero-panel-desc{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;}
+.hero-stats{
+  border-top:1px solid rgba(255,255,255,0.06);
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+}
+.stat{padding:1.5rem 1.2rem;border-right:1px solid rgba(255,255,255,0.06);}
+.stat:last-child{border-right:none;}
+.stat-n{font-family:'Playfair Display',serif;font-size:24px;color:var(--white);margin-bottom:3px;}
+.stat-l{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--stone);}
+
+/* MARQUEE */
+.marquee-wrap{
+  background:var(--gold);padding:13px 0;
+  overflow:hidden;white-space:nowrap;
+}
+.marquee-track{display:inline-flex;animation:marquee 24s linear infinite;}
+.marquee-track span{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--white);padding:0 3rem;}
+.marquee-track .sep{color:rgba(255,255,255,0.4);font-size:5px;align-self:center;}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* PRODUCTS */
+.products-section{padding:6rem 3rem;}
+.sec-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.5rem;}
+.sec-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;}
+.sec-title{font-family:'Playfair Display',serif;font-size:38px;font-weight:400;}
+.sec-link{
+  font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--stone);text-decoration:none;
+  border-bottom:1px solid var(--sand);padding-bottom:2px;
+  transition:color 0.2s,border-color 0.2s;
+}
+.sec-link:hover{color:var(--ink);border-color:var(--ink);}
+.tab-filters{display:flex;gap:0;margin-bottom:2.5rem;border-bottom:1px solid var(--sand);}
+.tab{
+  font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  padding:10px 20px;border:none;background:transparent;
+  color:var(--stone);cursor:pointer;font-family:'DM Sans',sans-serif;
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;
+}
+.tab.active,.tab:hover{color:var(--ink);border-bottom-color:var(--gold);}
+.product-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:2px;background:var(--sand);
+}
+.product-card{background:var(--cream);cursor:pointer;}
+.card-img-wrap{
+  position:relative;overflow:hidden;
+  aspect-ratio:3/4;
+}
+.card-img-wrap img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform 0.7s cubic-bezier(.25,.46,.45,.94);
+}
+.product-card:hover .card-img-wrap img{transform:scale(1.07);}
+.card-hover-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(14,12,8,0.7) 0%,transparent 50%);
+  opacity:0;transition:opacity 0.35s;
+  display:flex;align-items:flex-end;justify-content:center;padding-bottom:1.5rem;
+}
+.product-card:hover .card-hover-overlay{opacity:1;}
+.card-hover-overlay button{
+  background:var(--gold);color:var(--white);
+  padding:11px 26px;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:background 0.2s;
+}
+.card-hover-overlay button:hover{background:var(--gold-light);}
+.card-badge{
+  position:absolute;top:12px;left:12px;z-index:2;
+  background:var(--ink);color:var(--white);
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;
+}
+.card-badge.sale{background:var(--gold);color:var(--white);}
+.card-wish{
+  position:absolute;top:12px;right:12px;z-index:2;
+  background:rgba(255,255,255,0.85);width:30px;height:30px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:13px;opacity:0;transition:opacity 0.3s;cursor:pointer;
+}
+.product-card:hover .card-wish{opacity:1;}
+.card-body{padding:1.2rem 1rem 1.6rem;}
+.card-name{font-size:14px;font-weight:400;margin-bottom:4px;}
+.card-sub{font-size:11px;color:var(--stone);margin-bottom:0.7rem;letter-spacing:0.3px;}
+.card-bottom{display:flex;align-items:center;justify-content:space-between;}
+.card-price{font-family:'Playfair Display',serif;font-size:17px;}
+.card-price .old{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--stone);
+  text-decoration:line-through;margin-right:6px;}
+.swatches{display:flex;gap:5px;}
+.dot{width:11px;height:11px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);}
+
+/* EDITORIAL */
+.editorial{
+  display:grid;grid-template-columns:1fr 1fr;
+  min-height:580px;
+}
+.ed-img{position:relative;overflow:hidden;}
+.ed-img img{width:100%;height:100%;object-fit:cover;transition:transform 8s ease;}
+.ed-img:hover img{transform:scale(1.04);}
+.ed-img-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(14,12,8,0.4) 0%,transparent 60%);
+}
+.ed-content{
+  background:var(--ink);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:5rem 4.5rem;
+  position:relative;overflow:hidden;
+}
+.ed-content::before{
+  content:'';position:absolute;
+  top:-80px;right:-80px;
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(184,147,90,0.12) 0%,transparent 70%);
+}
+.ed-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.5rem;}
+.ed-title{font-family:'Playfair Display',serif;font-size:44px;font-weight:400;
+  color:var(--white);line-height:1.05;margin-bottom:1.5rem;}
+.ed-title em{font-style:italic;color:var(--gold-light);}
+.ed-text{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.9;
+  max-width:340px;margin-bottom:2.5rem;}
+.btn-gold-outline{
+  background:transparent;color:var(--gold);
+  padding:14px 32px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  border:1px solid var(--gold);cursor:pointer;font-family:'DM Sans',sans-serif;
+  align-self:flex-start;transition:all 0.2s;
+}
+.btn-gold-outline:hover{background:var(--gold);color:var(--white);}
+
+/* CATEGORIES */
+.categories{padding:6rem 3rem;}
+.cat-grid{
+  display:grid;
+  grid-template-columns:1.4fr 1fr 1fr;
+  grid-template-rows:280px 280px;
+  gap:3px;background:var(--sand);
+}
+.cat-card{
+  position:relative;overflow:hidden;cursor:pointer;
+  display:flex;align-items:flex-end;padding:1.8rem;
+}
+.cat-card:first-child{grid-row:span 2;}
+.cat-card img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;transition:transform 0.6s cubic-bezier(.25,.46,.45,.94);
+  filter:brightness(0.6);
+}
+.cat-card:hover img{transform:scale(1.06);filter:brightness(0.5);}
+.cat-info{position:relative;z-index:1;}
+.cat-sub{font-size:9px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,0.55);margin-bottom:4px;}
+.cat-name{font-family:'Playfair Display',serif;font-size:22px;
+  color:var(--white);font-weight:400;}
+.cat-arrow{
+  position:absolute;top:1.5rem;right:1.5rem;z-index:1;
+  color:rgba(255,255,255,0);font-size:20px;
+  transition:color 0.3s;
+}
+.cat-card:hover .cat-arrow{color:var(--gold-light);}
+
+/* NEWSLETTER */
+.newsletter{
+  background:var(--warm);
+  padding:7rem 3rem;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  position:relative;overflow:hidden;
+}
+.newsletter::before{
+  content:'';position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(184,147,90,0.1) 0%,transparent 65%);
+}
+.nl-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.5rem;position:relative;}
+.nl-title{font-family:'Playfair Display',serif;font-size:48px;font-weight:400;
+  margin-bottom:1rem;position:relative;line-height:1.1;}
+.nl-title em{font-style:italic;color:var(--gold);}
+.nl-sub{font-size:14px;color:var(--stone);margin-bottom:3rem;position:relative;}
+.nl-form{display:flex;max-width:480px;width:100%;position:relative;}
+.nl-form input{
+  flex:1;padding:16px 22px;
+  background:var(--white);
+  border:1.5px solid var(--sand);border-right:none;
+  color:var(--ink);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;
+  transition:border-color 0.2s;
+}
+.nl-form input:focus{border-color:var(--gold);}
+.nl-form input::placeholder{color:var(--stone);}
+.nl-form button{
+  background:var(--gold);color:var(--white);
+  padding:16px 30px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;
+  transition:background 0.2s;
+}
+.nl-form button:hover{background:var(--gold-light);}
+
+/* FOOTER */
+footer{background:var(--ink);padding:5rem 3rem 0;}
+.footer-top{
+  display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;
+  gap:3.5rem;padding-bottom:4rem;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.f-brand-logo{font-family:'Playfair Display',serif;font-size:28px;
+  color:var(--white);letter-spacing:5px;margin-bottom:1.2rem;}
+.f-brand-desc{font-size:13px;color:var(--stone);line-height:1.85;max-width:230px;margin-bottom:1.5rem;}
+.f-social{display:flex;gap:0.8rem;}
+.f-social a{
+  width:34px;height:34px;border:1px solid rgba(255,255,255,0.1);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:11px;color:var(--stone);text-decoration:none;
+  transition:all 0.2s;
+}
+.f-social a:hover{border-color:var(--gold);color:var(--gold);}
+.f-col h5{font-size:9.5px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,0.35);margin-bottom:1.4rem;}
+.f-col a{display:block;font-size:13px;color:rgba(255,255,255,0.45);
+  text-decoration:none;line-height:2.5;transition:color 0.2s;}
+.f-col a:hover{color:var(--gold-light);}
+.footer-bottom{
+  padding:1.8rem 0;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer-bottom p{font-size:12px;color:rgba(255,255,255,0.2);}
+.footer-bottom span{font-size:12px;color:var(--gold);letter-spacing:1px;}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.75s ease,transform 0.75s ease;}
+.reveal.in{opacity:1;transform:none;}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .hero{grid-template-columns:1fr;}
+  .hero-right-panel{display:none;}
+  .product-grid{grid-template-columns:repeat(2,1fr);}
+  .editorial{grid-template-columns:1fr;}
+  .ed-img{min-height:380px;}
+  .cat-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto;}
+  .cat-card:first-child{grid-row:span 1;}
+  .cat-card{min-height:220px;}
+  .footer-top{grid-template-columns:1fr 1fr;gap:2.5rem;}
+  nav{padding:1rem 1.5rem;}
+  .nav-links{display:none;}
+  nav.scrolled{padding:0.8rem 1.5rem;}
+  .products-section,.categories{padding:4rem 1.5rem;}
+}
+@media(max-width:600px){
+  .hero-title{font-size:44px;}
+  .nl-title{font-size:34px;}
+  .ed-content{padding:3rem 2rem;}
+  .ed-title{font-size:34px;}
+  .footer-top{grid-template-columns:1fr;}
+  footer{padding:4rem 1.5rem 0;}
+}
+</style>"""
+
+
+def product_card(p):
+    badge = f'<span class="card-badge {p.get("badge_class","")}">{p["badge"]}</span>' if p.get("badge") else ""
+    old   = f'<span class="old">{p["old_price"]}</span>' if p.get("old_price") else ""
+    dots  = "".join(f'<div class="dot" style="background:{c}"></div>' for c in p["swatches"])
+    return f"""
+    <div class="product-card">
+      <div class="card-img-wrap">
+        {badge}
+        <div class="card-wish">♡</div>
+        <img src="{p['img']}" alt="{p['name']}" loading="lazy"/>
+        <div class="card-hover-overlay">
+          <button>Add to Bag</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">{p['name']}</div>
+        <div class="card-sub">{p['sub']}</div>
+        <div class="card-bottom">
+          <div class="card-price">{old}{p['price']}</div>
+          <div class="swatches">{dots}</div>
+        </div>
+      </div>
+    </div>"""
+
+
+def build():
+    products_html = "\n".join(product_card(p) for p in PRODUCTS)
+
+    return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HAUS — Wear What You Are</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-    :root {
-      --bg: #f9f9f7;
-      --surface: #f2f2ef;
-      --white: #ffffff;
-      --text: #1a1a18;
-      --muted: #888882;
-      --border: #e0e0db;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    /* NAV */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.2rem 3rem;
-      border-bottom: 0.5px solid var(--border);
-      background: var(--bg);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .nav-links { display: flex; gap: 2rem; font-size: 13px; color: var(--muted); cursor: pointer; }
-    .nav-links span:hover { color: var(--text); transition: color 0.2s; }
-    .logo { font-size: 17px; font-weight: 500; letter-spacing: 5px; text-transform: uppercase; }
-    .nav-icons { display: flex; gap: 1.2rem; font-size: 18px; color: var(--muted); cursor: pointer; }
-    .nav-icons span:hover { color: var(--text); }
-    .cart-wrap { position: relative; }
-    .cart-badge {
-      position: absolute; top: -6px; right: -6px;
-      background: var(--text); color: var(--white);
-      border-radius: 50%; width: 14px; height: 14px;
-      font-size: 8px; display: flex; align-items: center; justify-content: center;
-    }
-
-    /* HERO */
-    .hero {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 520px;
-    }
-    .hero-text {
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 4rem 3rem;
-    }
-    .hero-tag {
-      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-      color: var(--muted); margin-bottom: 1.2rem;
-    }
-    .hero-title {
-      font-size: 52px; font-weight: 300; line-height: 1.08;
-      margin-bottom: 1.5rem;
-    }
-    .hero-title em { font-style: italic; color: var(--muted); }
-    .hero-desc {
-      font-size: 14px; color: var(--muted); line-height: 1.8;
-      max-width: 340px; margin-bottom: 2.5rem;
-    }
-    .hero-btns { display: flex; gap: 1rem; }
-    .btn-dark {
-      background: var(--text); color: var(--white);
-      padding: 13px 30px; font-size: 12px; letter-spacing: 1.5px;
-      text-transform: uppercase; border: none; cursor: pointer;
-      transition: opacity 0.2s;
-    }
-    .btn-dark:hover { opacity: 0.85; }
-    .btn-outline {
-      background: transparent; color: var(--text);
-      padding: 13px 30px; font-size: 12px; letter-spacing: 1.5px;
-      text-transform: uppercase; border: 0.5px solid var(--border);
-      cursor: pointer; transition: border-color 0.2s;
-    }
-    .btn-outline:hover { border-color: var(--text); }
-    .hero-visual {
-      background: var(--surface);
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    /* PRODUCTS */
-    .section { padding: 3.5rem 3rem; }
-    .section-header {
-      display: flex; justify-content: space-between;
-      align-items: baseline; margin-bottom: 0.75rem;
-    }
-    .section-title { font-size: 18px; font-weight: 400; letter-spacing: 0.5px; }
-    .see-all {
-      font-size: 11px; color: var(--muted); letter-spacing: 2px;
-      text-transform: uppercase; cursor: pointer;
-      text-decoration: none; color: var(--muted);
-    }
-    .see-all:hover { color: var(--text); }
-    .filters { display: flex; gap: 0.75rem; margin-bottom: 2rem; }
-    .filter-btn {
-      font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
-      padding: 6px 16px; border: 0.5px solid var(--border);
-      background: transparent; color: var(--muted); cursor: pointer;
-      transition: all 0.15s;
-    }
-    .filter-btn.active, .filter-btn:hover {
-      border-color: var(--text); color: var(--text);
-    }
-    .products {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-    }
-    .product { cursor: pointer; }
-    .product-img {
-      background: var(--surface);
-      aspect-ratio: 3/4;
-      display: flex; align-items: center; justify-content: center;
-      margin-bottom: 0.8rem;
-      position: relative; overflow: hidden;
-    }
-    .quick-add {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      background: var(--text); color: var(--white);
-      font-size: 10px; letter-spacing: 2px; text-align: center;
-      padding: 11px; opacity: 0;
-      transition: opacity 0.2s; text-transform: uppercase;
-    }
-    .product-img:hover .quick-add { opacity: 1; }
-    .product-tag {
-      position: absolute; top: 10px; left: 10px;
-      background: var(--text); color: var(--white);
-      font-size: 9px; letter-spacing: 1.5px; padding: 3px 8px;
-      text-transform: uppercase;
-    }
-    .product-name { font-size: 13px; margin-bottom: 4px; }
-    .product-price { font-size: 13px; color: var(--muted); }
-    .strike { text-decoration: line-through; margin-right: 6px; }
-
-    /* BANNER */
-    .banner {
-      background: var(--text); color: var(--white);
-      margin: 0 3rem 3.5rem;
-      padding: 3rem 3rem;
-      display: flex; justify-content: space-between; align-items: center;
-      gap: 2rem;
-    }
-    .banner h2 { font-size: 28px; font-weight: 300; margin-bottom: 0.5rem; }
-    .banner p { color: rgba(255,255,255,0.6); font-size: 14px; }
-    .btn-white {
-      background: var(--white); color: var(--text);
-      padding: 13px 30px; font-size: 12px; letter-spacing: 1.5px;
-      text-transform: uppercase; border: none; cursor: pointer;
-      white-space: nowrap; transition: opacity 0.2s;
-      flex-shrink: 0;
-    }
-    .btn-white:hover { opacity: 0.85; }
-
-    /* FOOTER */
-    footer {
-      border-top: 0.5px solid var(--border);
-      padding: 3rem;
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 2rem;
-    }
-    .footer-col h4 {
-      font-size: 10px; letter-spacing: 3px;
-      text-transform: uppercase; margin-bottom: 1.2rem; font-weight: 500;
-    }
-    .footer-col p {
-      font-size: 13px; color: var(--muted);
-      line-height: 2.2; cursor: pointer;
-    }
-    .footer-col p:hover { color: var(--text); }
-    .footer-bottom {
-      border-top: 0.5px solid var(--border);
-      padding: 1.5rem 3rem;
-      display: flex; justify-content: space-between;
-      font-size: 12px; color: var(--muted);
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 768px) {
-      nav { padding: 1rem 1.5rem; }
-      .nav-links { display: none; }
-      .hero { grid-template-columns: 1fr; }
-      .hero-visual { min-height: 300px; }
-      .hero-text { padding: 2.5rem 1.5rem; }
-      .hero-title { font-size: 36px; }
-      .section { padding: 2rem 1.5rem; }
-      .products { grid-template-columns: repeat(2, 1fr); }
-      .banner { margin: 0 1.5rem 2rem; flex-direction: column; padding: 2rem; }
-      footer { grid-template-columns: repeat(2, 1fr); padding: 2rem 1.5rem; }
-      .footer-bottom { padding: 1rem 1.5rem; flex-direction: column; gap: 0.5rem; }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{SITE_NAME} — {TAGLINE}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+{css()}
 </head>
 <body>
 
 <!-- NAV -->
-<nav>
+<nav id="nav">
   <div class="nav-links">
-    <span>Women</span>
-    <span>Men</span>
-    <span>Collections</span>
-    <span>Sale</span>
+    <a href="#">Women</a><a href="#">Men</a><a href="#">Collections</a><a href="#">Sale</a>
   </div>
-  <div class="logo">HAUS</div>
-  <div class="nav-icons">
-    <span title="Search">&#128269;</span>
-    <span title="Account">&#128100;</span>
-    <span class="cart-wrap" title="Cart">
-      &#128717;
-      <span class="cart-badge">2</span>
-    </span>
+  <div class="nav-logo">{SITE_NAME}</div>
+  <div class="nav-right">
+    <a href="#">Search</a>
+    <a href="#">Bag <span class="cart-badge">2</span></a>
   </div>
 </nav>
 
 <!-- HERO -->
-<div class="hero">
-  <div class="hero-text">
-    <p class="hero-tag">New collection — Summer 2025</p>
-    <h1 class="hero-title">Wear what <em>you are</em></h1>
-    <p class="hero-desc">Clothing designed to last. Sustainable materials, timeless silhouettes, for people who choose with intention.</p>
-    <div class="hero-btns">
-      <button class="btn-dark">Shop the collection</button>
-      <button class="btn-outline">Lookbook</button>
+<section class="hero">
+  <div class="hero-img-side">
+    <img src="{IMAGES['hero']}" alt="Hero fashion"/>
+    <div class="hero-text-overlay">
+      <p class="hero-eyebrow">{SEASON}</p>
+      <h1 class="hero-title">Dress<br>like you<br><em>mean it.</em></h1>
+      <p class="hero-sub">Slow fashion made to last. Organic materials, considered silhouettes — for people who don't follow trends, they set them.</p>
+      <div class="hero-ctas">
+        <button class="btn-gold">Shop Now</button>
+        <button class="btn-outline-w">View Lookbook</button>
+      </div>
     </div>
   </div>
-  <div class="hero-visual">
-    <svg width="320" height="420" viewBox="0 0 320 420" xmlns="http://www.w3.org/2000/svg">
-      <rect width="320" height="420" fill="#ededea"/>
-      <ellipse cx="160" cy="100" rx="50" ry="55" fill="#e4e4e0" stroke="#ccc" stroke-width="1"/>
-      <path d="M95 155 Q160 138 225 155 L248 370 Q160 388 72 370 Z" fill="#e4e4e0" stroke="#ccc" stroke-width="1"/>
-      <path d="M95 155 Q72 165 55 200 L50 305 Q68 310 82 300 L88 210" fill="#e4e4e0" stroke="#ccc" stroke-width="1"/>
-      <path d="M225 155 Q248 165 265 200 L270 305 Q252 310 238 300 L232 210" fill="#e4e4e0" stroke="#ccc" stroke-width="1"/>
-      <line x1="160" y1="370" x2="138" y2="415" stroke="#ccc" stroke-width="2"/>
-      <line x1="160" y1="370" x2="182" y2="415" stroke="#ccc" stroke-width="2"/>
-      <rect x="122" y="410" width="36" height="9" rx="3" fill="#ddddd9" stroke="#ccc" stroke-width="0.5"/>
-      <rect x="166" y="410" width="36" height="9" rx="3" fill="#ddddd9" stroke="#ccc" stroke-width="0.5"/>
-      <text x="160" y="22" text-anchor="middle" font-family="sans-serif" font-size="9" letter-spacing="4" fill="#aaa">HAUS</text>
-    </svg>
+  <div class="hero-right-panel">
+    <div class="hero-panel-img">
+      <img src="{IMAGES['editorial']}" alt="Editorial"/>
+    </div>
+    <div class="hero-panel-content">
+      <p class="hero-panel-label">Editors' Pick</p>
+      <h3 class="hero-panel-title">The Summer Linen Edit</h3>
+      <p class="hero-panel-desc">Breathable. Beautiful. Built to last all season.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n">340+</div><div class="stat-l">Styles</div></div>
+      <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Organic</div></div>
+      <div class="stat"><div class="stat-n">Free</div><div class="stat-l">Returns</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>New Summer Arrivals</span><span class="sep">●</span>
+    <span>Free Shipping Over €80</span><span class="sep">●</span>
+    <span>Organic &amp; Sustainable</span><span class="sep">●</span>
+    <span>New in: Linen Collection</span><span class="sep">●</span>
+    <span>New Summer Arrivals</span><span class="sep">●</span>
+    <span>Free Shipping Over €80</span><span class="sep">●</span>
+    <span>Organic &amp; Sustainable</span><span class="sep">●</span>
+    <span>New in: Linen Collection</span><span class="sep">●</span>
+    <span>New Summer Arrivals</span><span class="sep">●</span>
+    <span>Free Shipping Over €80</span><span class="sep">●</span>
+    <span>Organic &amp; Sustainable</span><span class="sep">●</span>
+    <span>New in: Linen Collection</span><span class="sep">●</span>
   </div>
 </div>
 
 <!-- PRODUCTS -->
-<div class="section">
-  <div class="section-header">
-    <h2 class="section-title">New arrivals</h2>
-    <a class="see-all">View all →</a>
-  </div>
-  <div class="filters">
-    <button class="filter-btn active">All</button>
-    <button class="filter-btn">Tops</button>
-    <button class="filter-btn">Trousers</button>
-    <button class="filter-btn">Accessories</button>
-  </div>
-  <div class="products">
-
-    <div class="product">
-      <div class="product-img">
-        <span class="product-tag">New</span>
-        <svg width="90" height="120" viewBox="0 0 90 120" xmlns="http://www.w3.org/2000/svg">
-          <path d="M30 18 Q45 10 60 18 L68 112 Q45 118 22 112 Z" fill="#ddddd9" stroke="#ccc" stroke-width="1"/>
-          <path d="M30 18 Q18 24 12 42 L10 82 Q22 85 27 76 L28 46" fill="#ddddd9" stroke="#ccc" stroke-width="1"/>
-          <path d="M60 18 Q72 24 78 42 L80 82 Q68 85 63 76 L62 46" fill="#ddddd9" stroke="#ccc" stroke-width="1"/>
-        </svg>
-        <div class="quick-add">Add to cart</div>
-      </div>
-      <p class="product-name">Oversized linen shirt</p>
-      <p class="product-price">€89</p>
+<section class="products-section reveal">
+  <div class="sec-header">
+    <div>
+      <p class="sec-label">Fresh in</p>
+      <h2 class="sec-title">New Arrivals</h2>
     </div>
-
-    <div class="product">
-      <div class="product-img">
-        <svg width="70" height="130" viewBox="0 0 70 130" xmlns="http://www.w3.org/2000/svg">
-          <rect x="10" y="4" width="50" height="58" rx="3" fill="#ddddd9" stroke="#ccc" stroke-width="1"/>
-          <path d="M10 62 L4 128 Q22 132 35 130 Q48 132 66 128 L60 62 Z" fill="#ddddd9" stroke="#ccc" stroke-width="1"/>
-          <line x1="35" y1="62" x2="35" y2="130" stroke="#ccc" stroke-width="0.5"/>
-        </svg>
-        <div class="quick-add">Add to cart</div>
-      </div>
-      <p class="product-name">Wide leg trousers</p>
-      <p class="product-price">€115</p>
-    </div>
-
-    <div class="product">
-      <div class="product-img">
-        <span class="product-tag">−20%</span>
-        <svg width="80" height="115" viewBox="0 0 80 115" xmlns="http://www.w3.org/2000/svg">
-          <ellipse cx="40" cy="30" rx="26" ry="29" fill="#ddddd9" stroke="#ccc" stroke-width="1"/>
-          <path d="M14 56 Q40 44 66 56 L70 108 Q40 114 10 108 Z" fill="#ddddd9" stroke="#ccc" stroke-width="1"/>
-        </svg>
-        <div class="quick-add">Add to cart</div>
-      </div>
-      <p class="product-name">Ribbed knit sweater</p>
-      <p class="product-price"><span class="strike">€95</span>€76</p>
-    </div>
-
-    <div class="product">
-      <div class="product-img">
-        <svg width="65" height="115" viewBox="0 0 65 115" xmlns="http://www.w3.org/2000/svg">
-          <rect x="5" y="5" width="55" height="105" rx="4" fill="#ddddd9" stroke="#ccc" stroke-width="1"/>
-          <rect x="12" y="15" width="41" height="30" rx="2" fill="#e9e9e6" stroke="#ccc" stroke-width="0.5"/>
-          <line x1="12" y1="62" x2="53" y2="62" stroke="#ccc" stroke-width="0.5"/>
-          <line x1="12" y1="74" x2="42" y2="74" stroke="#ccc" stroke-width="0.5"/>
-          <circle cx="50" cy="90" r="7" fill="none" stroke="#ccc" stroke-width="1"/>
-        </svg>
-        <div class="quick-add">Add to cart</div>
-      </div>
-      <p class="product-name">Structured tote bag</p>
-      <p class="product-price">€145</p>
-    </div>
-
+    <a class="sec-link" href="#">View all →</a>
   </div>
-</div>
-
-<!-- BANNER -->
-<div class="banner">
-  <div>
-    <h2>Fashion that doesn't cost the planet</h2>
-    <p>Organic cotton, natural linen and chemical-free dyes.</p>
+  <div class="tab-filters">
+    <button class="tab active">All</button>
+    <button class="tab">Tops</button>
+    <button class="tab">Trousers</button>
+    <button class="tab">Knitwear</button>
+    <button class="tab">Accessories</button>
   </div>
-  <button class="btn-white">Our philosophy</button>
-</div>
+  <div class="product-grid">
+    {products_html}
+  </div>
+</section>
+
+<!-- EDITORIAL -->
+<section class="editorial reveal">
+  <div class="ed-img">
+    <img src="{IMAGES['editorial']}" alt="Editorial"/>
+    <div class="ed-img-overlay"></div>
+  </div>
+  <div class="ed-content">
+    <p class="ed-label">Our philosophy</p>
+    <h2 class="ed-title">Fashion that doesn't<br>cost <em>the planet</em></h2>
+    <p class="ed-text">Every piece is made from certified organic cotton, natural linen, or recycled fibres. No harmful dyes. No exploitative labour. Just clothes you can wear with a clear conscience — and look great doing it.</p>
+    <button class="btn-gold-outline">Read our story →</button>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories reveal">
+  <div class="sec-header">
+    <div>
+      <p class="sec-label">Browse by</p>
+      <h2 class="sec-title">Shop by Category</h2>
+    </div>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card">
+      <img src="{IMAGES['cat_women']}" alt="Women"/>
+      <div class="cat-info">
+        <div class="cat-sub">Explore</div>
+        <div class="cat-name">Women</div>
+      </div>
+      <span class="cat-arrow">→</span>
+    </div>
+    <div class="cat-card">
+      <img src="{IMAGES['cat_men']}" alt="Men"/>
+      <div class="cat-info">
+        <div class="cat-sub">Explore</div>
+        <div class="cat-name">Men</div>
+      </div>
+      <span class="cat-arrow">→</span>
+    </div>
+    <div class="cat-card">
+      <img src="{IMAGES['cat_acc']}" alt="Accessories"/>
+      <div class="cat-info">
+        <div class="cat-sub">Explore</div>
+        <div class="cat-name">Accessories</div>
+      </div>
+      <span class="cat-arrow">→</span>
+    </div>
+    <div class="cat-card">
+      <img src="{IMAGES['cat_sale']}" alt="Sale"/>
+      <div class="cat-info">
+        <div class="cat-sub">Up to 40% off</div>
+        <div class="cat-name">Sale</div>
+      </div>
+      <span class="cat-arrow">→</span>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="newsletter reveal">
+  <p class="nl-label">Stay connected</p>
+  <h2 class="nl-title">Join the <em>HAUS</em> community</h2>
+  <p class="nl-sub">New drops, exclusive access, and styling notes — straight to your inbox.</p>
+  <div class="nl-form">
+    <input type="email" placeholder="your@email.com"/>
+    <button>Subscribe</button>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-col">
-    <h4>HAUS</h4>
-    <p>About us</p>
-    <p>Sustainability</p>
-    <p>Press</p>
-    <p>Careers</p>
+  <div class="footer-top">
+    <div>
+      <div class="f-brand-logo">{SITE_NAME}</div>
+      <p class="f-brand-desc">Slow fashion made with intention. Every piece tells a story — make it yours.</p>
+      <div class="f-social">
+        <a href="#" title="Instagram">In</a>
+        <a href="#" title="Pinterest">Pi</a>
+        <a href="#" title="TikTok">Tt</a>
+      </div>
+    </div>
+    <div class="f-col">
+      <h5>Shop</h5>
+      <a href="#">Women</a><a href="#">Men</a><a href="#">Accessories</a><a href="#">Sale</a>
+    </div>
+    <div class="f-col">
+      <h5>Help</h5>
+      <a href="#">Shipping &amp; Returns</a><a href="#">Size Guide</a>
+      <a href="#">Contact Us</a><a href="#">FAQs</a>
+    </div>
+    <div class="f-col">
+      <h5>Company</h5>
+      <a href="#">About {SITE_NAME}</a><a href="#">Sustainability</a>
+      <a href="#">Careers</a><a href="#">Press</a>
+    </div>
   </div>
-  <div class="footer-col">
-    <h4>Help</h4>
-    <p>Shipping & returns</p>
-    <p>Size guide</p>
-    <p>Contact us</p>
-    <p>FAQs</p>
-  </div>
-  <div class="footer-col">
-    <h4>Legal</h4>
-    <p>Privacy policy</p>
-    <p>Terms of use</p>
-    <p>Cookie settings</p>
-  </div>
-  <div class="footer-col">
-    <h4>Follow us</h4>
-    <p>Instagram</p>
-    <p>Pinterest</p>
-    <p>TikTok</p>
+  <div class="footer-bottom">
+    <p>© 2025 {SITE_NAME}. All rights reserved.</p>
+    <span>Made with intention ✦</span>
   </div>
 </footer>
-<div class="footer-bottom">
-  <span>© 2025 HAUS. All rights reserved.</span>
-  <span>Made with intention.</span>
-</div>
 
 <script>
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-</script>
+// Sticky nav
+window.addEventListener('scroll', () => {{
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+}});
 
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {{
+  entries.forEach(e => {{
+    if (e.isIntersecting) {{ e.target.classList.add('in'); obs.unobserve(e.target); }}
+  }});
+}}, {{ threshold: 0.07 }});
+document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
+
+// Tabs
+document.querySelectorAll('.tab').forEach(t => {{
+  t.addEventListener('click', () => {{
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+  }});
+}});
+</script>
 </body>
-</html>
+</html>"""
+
+
+if __name__ == "__main__":
+    html = build()
+    with open("index.html", "w", encoding="utf-8") as f:
+        f.write(html)
+    size = len(html.encode())
+    print(f"✅  index.html generated — {size/1024:.1f} KB")
+    print(f"📸  Using {len(IMAGES)} real Unsplash images")
+    print(f"\n🚀  git add index.html && git commit -m 'v2 with images' && git push")
