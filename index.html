@@ -1,512 +1,248 @@
-# ─────────────────────────────────────────────
-#  HAUS Store v2 — with real images & better colors
-#  Run: python generate_site.py
-#  Output: index.html
-# ─────────────────────────────────────────────
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>HAUS — Wear What You Are</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 
-# Unsplash source URLs — free, no attribution required for portfolio use
-# Format: https://source.unsplash.com/{photo_id}/{width}x{height}
-
-IMAGES = {
-    "hero":       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=80&fit=crop",
-    "product_1":  "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80&fit=crop",
-    "product_2":  "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80&fit=crop",
-    "product_3":  "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&q=80&fit=crop",
-    "product_4":  "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80&fit=crop",
-    "editorial":  "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&q=80&fit=crop",
-    "cat_women":  "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=800&q=80&fit=crop",
-    "cat_men":    "https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=600&q=80&fit=crop",
-    "cat_acc":    "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80&fit=crop",
-    "cat_sale":   "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=600&q=80&fit=crop",
-}
-
-PRODUCTS = [
-    {"name": "Oversized Linen Shirt", "sub": "Sand · Stone · Chalk",
-     "price": "€89", "badge": "New", "badge_class": "",
-     "img": IMAGES["product_1"],
-     "swatches": ["#d4cfc7","#8c8880","#f0ede8"]},
-    {"name": "Wide Leg Trousers",     "sub": "Oat · Charcoal",
-     "price": "€115", "badge": None, "badge_class": "",
-     "img": IMAGES["product_2"],
-     "swatches": ["#e8e4dc","#3a3a38"]},
-    {"name": "Ribbed Knit Sweater",   "sub": "Ecru · Mocha · Slate",
-     "price": "€76", "old_price": "€95", "badge": "−20%", "badge_class": "sale",
-     "img": IMAGES["product_3"],
-     "swatches": ["#f2ede4","#7a5c42","#6e7478"]},
-    {"name": "Structured Tote",       "sub": "Tan · Black",
-     "price": "€145", "badge": "Limited", "badge_class": "",
-     "img": IMAGES["product_4"],
-     "swatches": ["#c4a882","#1a1a18"]},
-]
-
-SITE_NAME = "HAUS"
-TAGLINE   = "Wear What You Are"
-SEASON    = "Summer Collection 2025"
-
-
-def css():
-    return """<style>
+<style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --ink:#141210;
-  --cream:#faf8f4;
-  --warm:#f0ebe0;
-  --sand:#e2dbd0;
-  --stone:#9e9890;
-  --gold:#b8935a;
-  --gold-light:#d4ae78;
+  --ink:#0f0f0d;
+  --cream:#f5f2ec;
+  --sand:#e8e3d9;
+  --stone:#b8b2a7;
+  --accent:#c9a96e;
   --white:#ffffff;
 }
 html{scroll-behavior:smooth;}
 body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
 
 /* NAV */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:1.2rem 3rem;
-  transition:all 0.4s ease;
-}
-nav.scrolled{
-  background:rgba(250,248,244,0.95);
-  backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--sand);
-  padding:0.9rem 3rem;
-}
-.nav-links{display:flex;gap:2.2rem;}
-.nav-links a{font-size:11.5px;letter-spacing:2.5px;text-transform:uppercase;
-  color:var(--ink);text-decoration:none;opacity:0.55;transition:opacity 0.2s;}
-.nav-links a:hover{opacity:1;}
-.nav-logo{
-  font-family:'Playfair Display',serif;font-size:24px;
-  letter-spacing:7px;position:absolute;left:50%;transform:translateX(-50%);
-  color:var(--white);transition:color 0.4s;
-}
-nav.scrolled .nav-logo{color:var(--ink);}
-.nav-right{display:flex;gap:1.8rem;align-items:center;}
-.nav-right a{font-size:11.5px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--white);text-decoration:none;opacity:0.7;transition:all 0.4s;}
-nav.scrolled .nav-right a{color:var(--ink);}
-.nav-right a:hover{opacity:1;}
-.cart-badge{
-  background:var(--gold);color:var(--white);
-  font-size:9px;letter-spacing:1px;padding:3px 8px;
-  border-radius:20px;margin-left:4px;
-}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;
+  justify-content:space-between;padding:1.1rem 2.5rem;background:transparent;
+  transition:background 0.4s,backdrop-filter 0.4s;}
+nav.scrolled{background:rgba(245,242,236,0.92);backdrop-filter:blur(12px);
+  border-bottom:0.5px solid var(--sand);}
+.nav-left{display:flex;gap:2rem;}
+.nav-left a,.nav-right a{font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;opacity:0.6;transition:opacity 0.2s;}
+.nav-left a:hover,.nav-right a:hover{opacity:1;}
+.nav-logo{font-family:'Playfair Display',serif;font-size:22px;letter-spacing:6px;
+  position:absolute;left:50%;transform:translateX(-50%);}
+.nav-right{display:flex;gap:1.5rem;align-items:center;}
+.cart-dot{position:absolute;top:-3px;right:-5px;width:6px;height:6px;
+  background:var(--accent);border-radius:50%;}
 
 /* HERO */
-.hero{
-  min-height:100vh;
-  display:grid;grid-template-columns:55% 45%;
-  position:relative;
-}
-.hero-img-side{
-  position:relative;overflow:hidden;
-}
-.hero-img-side img{
-  width:100%;height:100%;object-fit:cover;
-  filter:brightness(0.72);
-  transition:transform 8s ease;
-}
-.hero-img-side:hover img{transform:scale(1.04);}
-.hero-text-overlay{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;justify-content:flex-end;
-  padding:4rem 3.5rem;
-  background:linear-gradient(to top, rgba(14,12,8,0.75) 0%, rgba(14,12,8,0.1) 60%, transparent 100%);
-}
-.hero-eyebrow{
-  font-size:10px;letter-spacing:4px;text-transform:uppercase;
-  color:var(--gold-light);margin-bottom:1.2rem;
-}
-.hero-title{
-  font-family:'Playfair Display',serif;
-  font-size:clamp(48px,6vw,82px);
-  font-weight:400;line-height:0.93;
-  color:var(--white);margin-bottom:2rem;
-}
-.hero-title em{font-style:italic;color:var(--gold-light);}
-.hero-sub{
-  font-size:14px;color:rgba(255,255,255,0.6);
-  line-height:1.85;max-width:360px;margin-bottom:2.5rem;
-}
-.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;}
-.btn-gold{
-  background:var(--gold);color:var(--white);
-  padding:14px 34px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;
-  transition:background 0.2s,transform 0.2s;
-}
-.btn-gold:hover{background:var(--gold-light);transform:translateY(-2px);}
-.btn-outline-w{
-  background:transparent;color:var(--white);
-  padding:14px 34px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  border:1px solid rgba(255,255,255,0.35);cursor:pointer;
-  font-family:'DM Sans',sans-serif;transition:border-color 0.2s;
-}
-.btn-outline-w:hover{border-color:var(--white);}
-.hero-right-panel{
-  background:var(--ink);
-  display:flex;flex-direction:column;
-}
-.hero-panel-img{
-  flex:1;position:relative;overflow:hidden;
-}
-.hero-panel-img img{
-  width:100%;height:100%;object-fit:cover;
-  opacity:0.45;
-  transition:transform 8s ease;
-}
-.hero-panel-img:hover img{transform:scale(1.05);}
-.hero-panel-content{
-  padding:2.5rem;border-top:1px solid rgba(255,255,255,0.08);
-}
-.hero-panel-label{
-  font-size:9px;letter-spacing:4px;text-transform:uppercase;
-  color:var(--gold);margin-bottom:1rem;
-}
-.hero-panel-title{
-  font-family:'Playfair Display',serif;font-size:22px;
-  color:var(--white);font-weight:400;margin-bottom:0.5rem;
-}
-.hero-panel-desc{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.7;}
-.hero-stats{
-  border-top:1px solid rgba(255,255,255,0.06);
-  display:grid;grid-template-columns:1fr 1fr 1fr;
-}
-.stat{padding:1.5rem 1.2rem;border-right:1px solid rgba(255,255,255,0.06);}
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:70px;}
+.hero-left{background:var(--ink);display:flex;flex-direction:column;justify-content:flex-end;
+  padding:4rem 3rem;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;
+  background:radial-gradient(ellipse at 60% 30%,#2a2820 0%,var(--ink) 70%);}
+.hero-eyebrow{font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--accent);margin-bottom:1.5rem;position:relative;z-index:1;}
+.hero-title{font-family:'Playfair Display',serif;font-size:clamp(52px,7vw,88px);
+  font-weight:400;line-height:0.95;color:var(--white);position:relative;z-index:1;margin-bottom:2.5rem;}
+.hero-title em{font-style:italic;color:var(--accent);}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.8;
+  max-width:300px;position:relative;z-index:1;margin-bottom:3rem;}
+.hero-actions{display:flex;gap:1rem;position:relative;z-index:1;flex-wrap:wrap;}
+.btn-gold{background:var(--accent);color:var(--ink);padding:14px 32px;font-size:11px;
+  letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:transform 0.2s,box-shadow 0.2s;}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,169,110,0.35);}
+.btn-ghost{background:transparent;color:var(--white);padding:14px 32px;font-size:11px;
+  letter-spacing:2px;text-transform:uppercase;border:0.5px solid rgba(255,255,255,0.25);
+  cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color 0.2s;}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.7);}
+.hero-right{background:var(--sand);display:flex;flex-direction:column;}
+.hero-image-area{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem;}
+.hero-figure{width:200px;animation:float 6s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+.hero-stats{border-top:0.5px solid rgba(0,0,0,0.1);display:grid;grid-template-columns:1fr 1fr 1fr;}
+.stat{padding:1.4rem 1.2rem;border-right:0.5px solid rgba(0,0,0,0.1);}
 .stat:last-child{border-right:none;}
-.stat-n{font-family:'Playfair Display',serif;font-size:24px;color:var(--white);margin-bottom:3px;}
-.stat-l{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--stone);}
+.stat-num{font-family:'Playfair Display',serif;font-size:26px;margin-bottom:2px;}
+.stat-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);}
 
 /* MARQUEE */
-.marquee-wrap{
-  background:var(--gold);padding:13px 0;
-  overflow:hidden;white-space:nowrap;
-}
-.marquee-track{display:inline-flex;animation:marquee 24s linear infinite;}
-.marquee-track span{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;
-  color:var(--white);padding:0 3rem;}
-.marquee-track .sep{color:rgba(255,255,255,0.4);font-size:5px;align-self:center;}
+.marquee-wrap{background:var(--ink);color:var(--accent);padding:14px 0;overflow:hidden;white-space:nowrap;}
+.marquee-track{display:inline-flex;animation:marquee 22s linear infinite;}
+.marquee-track span{font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:0 3rem;}
+.marquee-track .dot{color:var(--stone);font-size:6px;align-self:center;}
 @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 
 /* PRODUCTS */
-.products-section{padding:6rem 3rem;}
-.sec-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.5rem;}
-.sec-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;}
-.sec-title{font-family:'Playfair Display',serif;font-size:38px;font-weight:400;}
-.sec-link{
-  font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--stone);text-decoration:none;
-  border-bottom:1px solid var(--sand);padding-bottom:2px;
-  transition:color 0.2s,border-color 0.2s;
-}
-.sec-link:hover{color:var(--ink);border-color:var(--ink);}
-.tab-filters{display:flex;gap:0;margin-bottom:2.5rem;border-bottom:1px solid var(--sand);}
-.tab{
-  font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  padding:10px 20px;border:none;background:transparent;
-  color:var(--stone);cursor:pointer;font-family:'DM Sans',sans-serif;
-  border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.2s;
-}
-.tab.active,.tab:hover{color:var(--ink);border-bottom-color:var(--gold);}
-.product-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:2px;background:var(--sand);
-}
-.product-card{background:var(--cream);cursor:pointer;}
-.card-img-wrap{
-  position:relative;overflow:hidden;
-  aspect-ratio:3/4;
-}
-.card-img-wrap img{
-  width:100%;height:100%;object-fit:cover;
-  transition:transform 0.7s cubic-bezier(.25,.46,.45,.94);
-}
-.product-card:hover .card-img-wrap img{transform:scale(1.07);}
-.card-hover-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(14,12,8,0.7) 0%,transparent 50%);
-  opacity:0;transition:opacity 0.35s;
-  display:flex;align-items:flex-end;justify-content:center;padding-bottom:1.5rem;
-}
-.product-card:hover .card-hover-overlay{opacity:1;}
-.card-hover-overlay button{
-  background:var(--gold);color:var(--white);
-  padding:11px 26px;font-size:10px;letter-spacing:2px;text-transform:uppercase;
-  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;
-  transition:background 0.2s;
-}
-.card-hover-overlay button:hover{background:var(--gold-light);}
-.card-badge{
-  position:absolute;top:12px;left:12px;z-index:2;
-  background:var(--ink);color:var(--white);
-  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;
-}
-.card-badge.sale{background:var(--gold);color:var(--white);}
-.card-wish{
-  position:absolute;top:12px;right:12px;z-index:2;
-  background:rgba(255,255,255,0.85);width:30px;height:30px;
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:13px;opacity:0;transition:opacity 0.3s;cursor:pointer;
-}
-.product-card:hover .card-wish{opacity:1;}
-.card-body{padding:1.2rem 1rem 1.6rem;}
-.card-name{font-size:14px;font-weight:400;margin-bottom:4px;}
-.card-sub{font-size:11px;color:var(--stone);margin-bottom:0.7rem;letter-spacing:0.3px;}
-.card-bottom{display:flex;align-items:center;justify-content:space-between;}
-.card-price{font-family:'Playfair Display',serif;font-size:17px;}
+.products-section{padding:5rem 2.5rem;}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;}
+.section-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--stone);margin-bottom:0.5rem;}
+.section-heading{font-family:'Playfair Display',serif;font-size:36px;font-weight:400;}
+.view-all{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);
+  cursor:pointer;border-bottom:0.5px solid var(--stone);padding-bottom:2px;text-decoration:none;}
+.view-all:hover{color:var(--ink);border-color:var(--ink);}
+.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--sand);}
+.product-card{background:var(--cream);cursor:pointer;overflow:hidden;}
+.card-image{background:var(--sand);aspect-ratio:2/3;display:flex;align-items:center;
+  justify-content:center;position:relative;overflow:hidden;
+  transition:transform 0.6s cubic-bezier(.25,.46,.45,.94);}
+.product-card:hover .card-image{transform:scale(1.03);}
+.card-overlay{position:absolute;inset:0;background:rgba(15,15,13,0.55);
+  display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:2rem;opacity:0;transition:opacity 0.3s;}
+.product-card:hover .card-overlay{opacity:1;}
+.card-overlay button{background:var(--accent);color:var(--ink);padding:11px 24px;
+  font-size:10px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;}
+.card-badge{position:absolute;top:14px;left:14px;background:var(--ink);color:var(--white);
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 9px;z-index:1;}
+.card-badge.sale{background:var(--accent);color:var(--ink);}
+.card-info{padding:1.2rem 1rem 1.5rem;}
+.card-name{font-size:14px;margin-bottom:5px;}
+.card-sub{font-size:11px;color:var(--stone);margin-bottom:10px;}
+.card-price{font-family:'Playfair Display',serif;font-size:16px;}
 .card-price .old{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--stone);
   text-decoration:line-through;margin-right:6px;}
-.swatches{display:flex;gap:5px;}
-.dot{width:11px;height:11px;border-radius:50%;border:1.5px solid rgba(0,0,0,0.08);}
+.card-colors{display:flex;gap:5px;margin-top:10px;}
+.swatch{width:12px;height:12px;border-radius:50%;}
 
 /* EDITORIAL */
-.editorial{
-  display:grid;grid-template-columns:1fr 1fr;
-  min-height:580px;
-}
-.ed-img{position:relative;overflow:hidden;}
-.ed-img img{width:100%;height:100%;object-fit:cover;transition:transform 8s ease;}
-.ed-img:hover img{transform:scale(1.04);}
-.ed-img-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(14,12,8,0.4) 0%,transparent 60%);
-}
-.ed-content{
-  background:var(--ink);
-  display:flex;flex-direction:column;justify-content:center;
-  padding:5rem 4.5rem;
-  position:relative;overflow:hidden;
-}
-.ed-content::before{
-  content:'';position:absolute;
-  top:-80px;right:-80px;
-  width:300px;height:300px;
-  background:radial-gradient(circle,rgba(184,147,90,0.12) 0%,transparent 70%);
-}
-.ed-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;
-  color:var(--gold);margin-bottom:1.5rem;}
-.ed-title{font-family:'Playfair Display',serif;font-size:44px;font-weight:400;
-  color:var(--white);line-height:1.05;margin-bottom:1.5rem;}
-.ed-title em{font-style:italic;color:var(--gold-light);}
-.ed-text{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.9;
+.editorial{display:grid;grid-template-columns:1fr 1fr;min-height:520px;}
+.editorial-img{background:var(--ink);display:flex;align-items:center;justify-content:center;}
+.editorial-content{background:var(--accent);display:flex;flex-direction:column;
+  justify-content:center;padding:5rem 4rem;}
+.editorial-content .eyebrow{font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:rgba(15,15,13,0.5);margin-bottom:1.5rem;}
+.editorial-content h2{font-family:'Playfair Display',serif;font-size:44px;
+  font-weight:400;line-height:1.05;margin-bottom:1.5rem;}
+.editorial-content p{font-size:14px;line-height:1.9;color:rgba(15,15,13,0.65);
   max-width:340px;margin-bottom:2.5rem;}
-.btn-gold-outline{
-  background:transparent;color:var(--gold);
-  padding:14px 32px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  border:1px solid var(--gold);cursor:pointer;font-family:'DM Sans',sans-serif;
-  align-self:flex-start;transition:all 0.2s;
-}
-.btn-gold-outline:hover{background:var(--gold);color:var(--white);}
+.btn-dark{background:var(--ink);color:var(--white);padding:14px 32px;font-size:11px;
+  letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;align-self:flex-start;transition:opacity 0.2s;}
+.btn-dark:hover{opacity:0.75;}
 
 /* CATEGORIES */
-.categories{padding:6rem 3rem;}
-.cat-grid{
-  display:grid;
-  grid-template-columns:1.4fr 1fr 1fr;
-  grid-template-rows:280px 280px;
-  gap:3px;background:var(--sand);
-}
-.cat-card{
-  position:relative;overflow:hidden;cursor:pointer;
-  display:flex;align-items:flex-end;padding:1.8rem;
-}
+.categories{padding:5rem 2.5rem;}
+.cat-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;
+  gap:1px;background:var(--sand);height:520px;}
+.cat-card{display:flex;align-items:flex-end;padding:2rem;position:relative;
+  overflow:hidden;cursor:pointer;}
 .cat-card:first-child{grid-row:span 2;}
-.cat-card img{
-  position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;transition:transform 0.6s cubic-bezier(.25,.46,.45,.94);
-  filter:brightness(0.6);
-}
-.cat-card:hover img{transform:scale(1.06);filter:brightness(0.5);}
-.cat-info{position:relative;z-index:1;}
-.cat-sub{font-size:9px;letter-spacing:3px;text-transform:uppercase;
-  color:rgba(255,255,255,0.55);margin-bottom:4px;}
-.cat-name{font-family:'Playfair Display',serif;font-size:22px;
-  color:var(--white);font-weight:400;}
-.cat-arrow{
-  position:absolute;top:1.5rem;right:1.5rem;z-index:1;
-  color:rgba(255,255,255,0);font-size:20px;
-  transition:color 0.3s;
-}
-.cat-card:hover .cat-arrow{color:var(--gold-light);}
+.cat-label{position:relative;z-index:1;font-family:'Playfair Display',serif;
+  font-size:22px;color:var(--white);text-shadow:0 2px 12px rgba(0,0,0,0.4);}
+.cat-label span{display:block;font-family:'DM Sans',sans-serif;font-size:11px;
+  letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.65);
+  font-style:normal;margin-bottom:4px;}
 
 /* NEWSLETTER */
-.newsletter{
-  background:var(--warm);
-  padding:7rem 3rem;
-  display:flex;flex-direction:column;align-items:center;text-align:center;
-  position:relative;overflow:hidden;
-}
-.newsletter::before{
-  content:'';position:absolute;
-  inset:0;
-  background:radial-gradient(ellipse at 50% 0%,rgba(184,147,90,0.1) 0%,transparent 65%);
-}
-.nl-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;
-  color:var(--gold);margin-bottom:1.5rem;position:relative;}
-.nl-title{font-family:'Playfair Display',serif;font-size:48px;font-weight:400;
-  margin-bottom:1rem;position:relative;line-height:1.1;}
-.nl-title em{font-style:italic;color:var(--gold);}
-.nl-sub{font-size:14px;color:var(--stone);margin-bottom:3rem;position:relative;}
-.nl-form{display:flex;max-width:480px;width:100%;position:relative;}
-.nl-form input{
-  flex:1;padding:16px 22px;
-  background:var(--white);
-  border:1.5px solid var(--sand);border-right:none;
-  color:var(--ink);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;
-  transition:border-color 0.2s;
-}
-.nl-form input:focus{border-color:var(--gold);}
-.nl-form input::placeholder{color:var(--stone);}
-.nl-form button{
-  background:var(--gold);color:var(--white);
-  padding:16px 30px;font-size:11px;letter-spacing:2px;text-transform:uppercase;
-  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;
-  transition:background 0.2s;
-}
-.nl-form button:hover{background:var(--gold-light);}
+.newsletter{background:var(--ink);padding:6rem 2.5rem;display:flex;
+  flex-direction:column;align-items:center;text-align:center;}
+.newsletter h2{font-family:'Playfair Display',serif;font-size:48px;color:var(--white);
+  font-weight:400;margin-bottom:1rem;}
+.newsletter h2 em{font-style:italic;color:var(--accent);}
+.newsletter p{font-size:14px;color:var(--stone);margin-bottom:2.5rem;}
+.newsletter-form{display:flex;max-width:460px;width:100%;}
+.newsletter-form input{flex:1;padding:14px 20px;background:rgba(255,255,255,0.07);
+  border:0.5px solid rgba(255,255,255,0.15);border-right:none;color:var(--white);
+  font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
+.newsletter-form input::placeholder{color:var(--stone);}
+.newsletter-form button{background:var(--accent);color:var(--ink);padding:14px 28px;
+  font-size:11px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;
+  font-family:'DM Sans',sans-serif;white-space:nowrap;}
 
 /* FOOTER */
-footer{background:var(--ink);padding:5rem 3rem 0;}
-.footer-top{
-  display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;
-  gap:3.5rem;padding-bottom:4rem;
-  border-bottom:1px solid rgba(255,255,255,0.06);
-}
-.f-brand-logo{font-family:'Playfair Display',serif;font-size:28px;
-  color:var(--white);letter-spacing:5px;margin-bottom:1.2rem;}
-.f-brand-desc{font-size:13px;color:var(--stone);line-height:1.85;max-width:230px;margin-bottom:1.5rem;}
-.f-social{display:flex;gap:0.8rem;}
-.f-social a{
-  width:34px;height:34px;border:1px solid rgba(255,255,255,0.1);
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:11px;color:var(--stone);text-decoration:none;
-  transition:all 0.2s;
-}
-.f-social a:hover{border-color:var(--gold);color:var(--gold);}
-.f-col h5{font-size:9.5px;letter-spacing:3px;text-transform:uppercase;
-  color:rgba(255,255,255,0.35);margin-bottom:1.4rem;}
-.f-col a{display:block;font-size:13px;color:rgba(255,255,255,0.45);
-  text-decoration:none;line-height:2.5;transition:color 0.2s;}
-.f-col a:hover{color:var(--gold-light);}
-.footer-bottom{
-  padding:1.8rem 0;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.footer-bottom p{font-size:12px;color:rgba(255,255,255,0.2);}
-.footer-bottom span{font-size:12px;color:var(--gold);letter-spacing:1px;}
+footer{background:var(--ink);border-top:0.5px solid #1e1e1c;padding:4rem 2.5rem 2rem;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+.footer-brand .logo-f{font-family:'Playfair Display',serif;font-size:26px;
+  color:var(--white);letter-spacing:4px;margin-bottom:1rem;}
+.footer-brand p{font-size:13px;color:var(--stone);line-height:1.8;max-width:220px;}
+.footer-col h5{font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--stone);margin-bottom:1.2rem;}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,0.5);
+  text-decoration:none;line-height:2.4;transition:color 0.2s;cursor:pointer;}
+.footer-col a:hover{color:var(--white);}
+.footer-bottom{border-top:0.5px solid #1e1e1c;padding-top:1.5rem;
+  display:flex;justify-content:space-between;align-items:center;}
+.footer-bottom p{font-size:12px;color:var(--stone);}
+.social-links{display:flex;gap:1.5rem;}
+.social-links a{font-size:12px;color:var(--stone);text-decoration:none;transition:color 0.2s;}
+.social-links a:hover{color:var(--accent);}
 
-/* SCROLL REVEAL */
-.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.75s ease,transform 0.75s ease;}
-.reveal.in{opacity:1;transform:none;}
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:none;}
 
 /* RESPONSIVE */
-@media(max-width:960px){
+@media(max-width:900px){
   .hero{grid-template-columns:1fr;}
-  .hero-right-panel{display:none;}
+  .hero-left{min-height:55vh;}
   .product-grid{grid-template-columns:repeat(2,1fr);}
   .editorial{grid-template-columns:1fr;}
-  .ed-img{min-height:380px;}
-  .cat-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto;}
+  .cat-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto;height:auto;}
   .cat-card:first-child{grid-row:span 1;}
-  .cat-card{min-height:220px;}
-  .footer-top{grid-template-columns:1fr 1fr;gap:2.5rem;}
-  nav{padding:1rem 1.5rem;}
-  .nav-links{display:none;}
-  nav.scrolled{padding:0.8rem 1.5rem;}
-  .products-section,.categories{padding:4rem 1.5rem;}
+  .cat-card{min-height:200px;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .nav-left{display:none;}
 }
 @media(max-width:600px){
-  .hero-title{font-size:44px;}
-  .nl-title{font-size:34px;}
-  .ed-content{padding:3rem 2rem;}
-  .ed-title{font-size:34px;}
-  .footer-top{grid-template-columns:1fr;}
-  footer{padding:4rem 1.5rem 0;}
+  .hero-title{font-size:46px;}
+  .editorial-content{padding:3rem 2rem;}
+  .editorial-content h2{font-size:34px;}
+  .newsletter h2{font-size:32px;}
+  .footer-grid{grid-template-columns:1fr;}
+  .categories{padding:3rem 1.5rem;}
 }
-</style>"""
-
-
-def product_card(p):
-    badge = f'<span class="card-badge {p.get("badge_class","")}">{p["badge"]}</span>' if p.get("badge") else ""
-    old   = f'<span class="old">{p["old_price"]}</span>' if p.get("old_price") else ""
-    dots  = "".join(f'<div class="dot" style="background:{c}"></div>' for c in p["swatches"])
-    return f"""
-    <div class="product-card">
-      <div class="card-img-wrap">
-        {badge}
-        <div class="card-wish">♡</div>
-        <img src="{p['img']}" alt="{p['name']}" loading="lazy"/>
-        <div class="card-hover-overlay">
-          <button>Add to Bag</button>
-        </div>
-      </div>
-      <div class="card-body">
-        <div class="card-name">{p['name']}</div>
-        <div class="card-sub">{p['sub']}</div>
-        <div class="card-bottom">
-          <div class="card-price">{old}{p['price']}</div>
-          <div class="swatches">{dots}</div>
-        </div>
-      </div>
-    </div>"""
-
-
-def build():
-    products_html = "\n".join(product_card(p) for p in PRODUCTS)
-
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>{SITE_NAME} — {TAGLINE}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-{css()}
+</style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav id="nav">
-  <div class="nav-links">
-    <a href="#">Women</a><a href="#">Men</a><a href="#">Collections</a><a href="#">Sale</a>
+  <div class="nav-left">
+    <a href="#">Women</a>
+    <a href="#">Men</a>
+    <a href="#">Collections</a>
+    <a href="#">Sale</a>
   </div>
-  <div class="nav-logo">{SITE_NAME}</div>
+  <div class="nav-logo">HAUS</div>
   <div class="nav-right">
     <a href="#">Search</a>
-    <a href="#">Bag <span class="cart-badge">2</span></a>
+    <a href="#" style="position:relative;">Bag (2)<span class="cart-dot"></span></a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-img-side">
-    <img src="{IMAGES['hero']}" alt="Hero fashion"/>
-    <div class="hero-text-overlay">
-      <p class="hero-eyebrow">{SEASON}</p>
-      <h1 class="hero-title">Dress<br>like you<br><em>mean it.</em></h1>
-      <p class="hero-sub">Slow fashion made to last. Organic materials, considered silhouettes — for people who don't follow trends, they set them.</p>
-      <div class="hero-ctas">
-        <button class="btn-gold">Shop Now</button>
-        <button class="btn-outline-w">View Lookbook</button>
-      </div>
+  <div class="hero-left">
+    <div class="hero-bg"></div>
+    <p class="hero-eyebrow">Summer Collection 2025</p>
+    <h1 class="hero-title">Dress<br>like you<br><em>mean it.</em></h1>
+    <p class="hero-sub">Slow fashion made to last. Organic materials, considered
+      silhouettes — for people who don't follow trends, they set them.</p>
+    <div class="hero-actions">
+      <button class="btn-gold">Shop Now</button>
+      <button class="btn-ghost">View Lookbook</button>
     </div>
   </div>
-  <div class="hero-right-panel">
-    <div class="hero-panel-img">
-      <img src="{IMAGES['editorial']}" alt="Editorial"/>
-    </div>
-    <div class="hero-panel-content">
-      <p class="hero-panel-label">Editors' Pick</p>
-      <h3 class="hero-panel-title">The Summer Linen Edit</h3>
-      <p class="hero-panel-desc">Breathable. Beautiful. Built to last all season.</p>
+  <div class="hero-right">
+    <div class="hero-image-area">
+      <svg class="hero-figure" viewBox="0 0 200 340" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="100" cy="52" rx="34" ry="38" fill="#c8c4bc" stroke="#a8a49c" stroke-width="0.5"/>
+        <path d="M58 90Q100 74 142 90L158 295Q100 308 42 295Z" fill="#c8c4bc" stroke="#a8a49c" stroke-width="0.5"/>
+        <path d="M58 90Q36 100 26 126L20 230Q36 235 48 225L52 138" fill="#c8c4bc" stroke="#a8a49c" stroke-width="0.5"/>
+        <path d="M142 90Q164 100 174 126L180 230Q164 235 152 225L148 138" fill="#c8c4bc" stroke="#a8a49c" stroke-width="0.5"/>
+        <line x1="100" y1="295" x2="80" y2="335" stroke="#a8a49c" stroke-width="2"/>
+        <line x1="100" y1="295" x2="120" y2="335" stroke="#a8a49c" stroke-width="2"/>
+        <rect x="64" y="330" width="36" height="9" rx="2" fill="#b8b4ac"/>
+        <rect x="104" y="330" width="36" height="9" rx="2" fill="#b8b4ac"/>
+      </svg>
     </div>
     <div class="hero-stats">
-      <div class="stat"><div class="stat-n">340+</div><div class="stat-l">Styles</div></div>
-      <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Organic</div></div>
-      <div class="stat"><div class="stat-n">Free</div><div class="stat-l">Returns</div></div>
+      <div class="stat"><div class="stat-num">340+</div><div class="stat-lbl">Styles</div></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-lbl">Organic</div></div>
+      <div class="stat"><div class="stat-num">Free</div><div class="stat-lbl">Returns</div></div>
     </div>
   </div>
 </section>
@@ -514,106 +250,156 @@ def build():
 <!-- MARQUEE -->
 <div class="marquee-wrap">
   <div class="marquee-track">
-    <span>New Summer Arrivals</span><span class="sep">●</span>
-    <span>Free Shipping Over €80</span><span class="sep">●</span>
-    <span>Organic &amp; Sustainable</span><span class="sep">●</span>
-    <span>New in: Linen Collection</span><span class="sep">●</span>
-    <span>New Summer Arrivals</span><span class="sep">●</span>
-    <span>Free Shipping Over €80</span><span class="sep">●</span>
-    <span>Organic &amp; Sustainable</span><span class="sep">●</span>
-    <span>New in: Linen Collection</span><span class="sep">●</span>
-    <span>New Summer Arrivals</span><span class="sep">●</span>
-    <span>Free Shipping Over €80</span><span class="sep">●</span>
-    <span>Organic &amp; Sustainable</span><span class="sep">●</span>
-    <span>New in: Linen Collection</span><span class="sep">●</span>
+    <span>New Summer Arrivals</span><span class="dot">●</span><span>Free Shipping Over €80</span><span class="dot">●</span><span>Organic &amp; Sustainable</span><span class="dot">●</span><span>New Summer Arrivals</span><span class="dot">●</span><span>Free Shipping Over €80</span><span class="dot">●</span><span>Organic &amp; Sustainable</span><span class="dot">●</span><span>New Summer Arrivals</span><span class="dot">●</span><span>Free Shipping Over €80</span><span class="dot">●</span><span>Organic &amp; Sustainable</span><span class="dot">●</span><span>New Summer Arrivals</span><span class="dot">●</span><span>Free Shipping Over €80</span><span class="dot">●</span><span>Organic &amp; Sustainable</span><span class="dot">●</span>
   </div>
 </div>
 
 <!-- PRODUCTS -->
 <section class="products-section reveal">
-  <div class="sec-header">
+  <div class="section-head">
     <div>
-      <p class="sec-label">Fresh in</p>
-      <h2 class="sec-title">New Arrivals</h2>
+      <p class="section-label">Fresh in</p>
+      <h2 class="section-heading">New Arrivals</h2>
     </div>
-    <a class="sec-link" href="#">View all →</a>
-  </div>
-  <div class="tab-filters">
-    <button class="tab active">All</button>
-    <button class="tab">Tops</button>
-    <button class="tab">Trousers</button>
-    <button class="tab">Knitwear</button>
-    <button class="tab">Accessories</button>
+    <a class="view-all" href="#">View all →</a>
   </div>
   <div class="product-grid">
-    {products_html}
+    
+    <div class="product-card">
+      <div class="card-image">
+        <span class="card-badge ">New</span>
+        <svg width="90" height="130" viewBox="0 0 90 130" xmlns="http://www.w3.org/2000/svg">
+          <rect x="15" y="10" width="60" height="110" rx="4" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8" opacity="0.5"/>
+          <ellipse cx="45" cy="35" rx="22" ry="24" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
+          <path d="M20 58Q45 46 70 58L76 120Q45 128 14 120Z" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
+        </svg>
+        <div class="card-overlay"><button>Add to Bag</button></div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Oversized Linen Shirt</div>
+        <div class="card-sub">Sand / Stone / Chalk</div>
+        <div class="card-price">€89</div>
+        <div class="card-colors"><div class="swatch" style="background:#d4cfc7;border:1px solid #bbb;"></div>
+<div class="swatch" style="background:#8c8880;border:1px solid #bbb;"></div>
+<div class="swatch" style="background:#f0ede8;border:1px solid #bbb;"></div></div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-image">
+        
+        <svg width="90" height="130" viewBox="0 0 90 130" xmlns="http://www.w3.org/2000/svg">
+          <rect x="15" y="10" width="60" height="110" rx="4" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8" opacity="0.5"/>
+          <ellipse cx="45" cy="35" rx="22" ry="24" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
+          <path d="M20 58Q45 46 70 58L76 120Q45 128 14 120Z" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
+        </svg>
+        <div class="card-overlay"><button>Add to Bag</button></div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Wide Leg Trousers</div>
+        <div class="card-sub">Oat / Charcoal</div>
+        <div class="card-price">€115</div>
+        <div class="card-colors"><div class="swatch" style="background:#e8e4dc;border:1px solid #bbb;"></div>
+<div class="swatch" style="background:#3a3a38;border:1px solid #bbb;"></div></div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-image">
+        <span class="card-badge sale">−20%</span>
+        <svg width="90" height="130" viewBox="0 0 90 130" xmlns="http://www.w3.org/2000/svg">
+          <rect x="15" y="10" width="60" height="110" rx="4" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8" opacity="0.5"/>
+          <ellipse cx="45" cy="35" rx="22" ry="24" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
+          <path d="M20 58Q45 46 70 58L76 120Q45 128 14 120Z" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
+        </svg>
+        <div class="card-overlay"><button>Add to Bag</button></div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Ribbed Knit Sweater</div>
+        <div class="card-sub">Ecru / Mocha / Slate</div>
+        <div class="card-price"><span class="old">€95</span>€76</div>
+        <div class="card-colors"><div class="swatch" style="background:#f2ede4;border:1px solid #bbb;"></div>
+<div class="swatch" style="background:#7a5c42;border:1px solid #bbb;"></div>
+<div class="swatch" style="background:#6e7478;border:1px solid #bbb;"></div></div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="card-image">
+        <span class="card-badge ">Limited</span>
+        <svg width="90" height="130" viewBox="0 0 90 130" xmlns="http://www.w3.org/2000/svg">
+          <rect x="15" y="10" width="60" height="110" rx="4" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8" opacity="0.5"/>
+          <ellipse cx="45" cy="35" rx="22" ry="24" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
+          <path d="M20 58Q45 46 70 58L76 120Q45 128 14 120Z" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
+        </svg>
+        <div class="card-overlay"><button>Add to Bag</button></div>
+      </div>
+      <div class="card-info">
+        <div class="card-name">Structured Tote</div>
+        <div class="card-sub">Tan / Black</div>
+        <div class="card-price">€145</div>
+        <div class="card-colors"><div class="swatch" style="background:#c4a882;border:1px solid #bbb;"></div>
+<div class="swatch" style="background:#1a1a18;border:1px solid #bbb;"></div></div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- EDITORIAL -->
 <section class="editorial reveal">
-  <div class="ed-img">
-    <img src="{IMAGES['editorial']}" alt="Editorial"/>
-    <div class="ed-img-overlay"></div>
+  <div class="editorial-img">
+    <svg width="260" height="380" viewBox="0 0 260 380" xmlns="http://www.w3.org/2000/svg">
+      <rect width="260" height="380" fill="#1a1a18"/>
+      <ellipse cx="130" cy="82" rx="46" ry="50" fill="#2e2e2b" stroke="#3a3a37" stroke-width="1"/>
+      <path d="M76 132Q130 115 184 132L204 348Q130 363 56 348Z" fill="#2e2e2b" stroke="#3a3a37" stroke-width="1"/>
+      <path d="M76 132Q52 144 40 174L34 276Q53 282 66 272L72 196" fill="#2e2e2b" stroke="#3a3a37" stroke-width="1"/>
+      <path d="M184 132Q208 144 220 174L226 276Q207 282 194 272L188 196" fill="#2e2e2b" stroke="#3a3a37" stroke-width="1"/>
+      <rect x="156" y="168" width="86" height="30" fill="#c9a96e" opacity="0.9"/>
+      <text x="199" y="187" text-anchor="middle" font-family="sans-serif" font-size="7"
+            letter-spacing="2" fill="#0f0f0d">SUMMER '25</text>
+    </svg>
   </div>
-  <div class="ed-content">
-    <p class="ed-label">Our philosophy</p>
-    <h2 class="ed-title">Fashion that doesn't<br>cost <em>the planet</em></h2>
-    <p class="ed-text">Every piece is made from certified organic cotton, natural linen, or recycled fibres. No harmful dyes. No exploitative labour. Just clothes you can wear with a clear conscience — and look great doing it.</p>
-    <button class="btn-gold-outline">Read our story →</button>
+  <div class="editorial-content">
+    <p class="eyebrow">Our philosophy</p>
+    <h2>Fashion that doesn't cost the planet</h2>
+    <p>Every piece is made from certified organic cotton, natural linen,
+       or recycled fibres. No harmful dyes. No exploitative labour.
+       Just clothes you can wear with a clear conscience.</p>
+    <button class="btn-dark">Read our story →</button>
   </div>
 </section>
 
 <!-- CATEGORIES -->
 <section class="categories reveal">
-  <div class="sec-header">
+  <div class="section-head">
     <div>
-      <p class="sec-label">Browse by</p>
-      <h2 class="sec-title">Shop by Category</h2>
+      <p class="section-label">Browse by</p>
+      <h2 class="section-heading">Shop Categories</h2>
     </div>
   </div>
   <div class="cat-grid">
-    <div class="cat-card">
-      <img src="{IMAGES['cat_women']}" alt="Women"/>
-      <div class="cat-info">
-        <div class="cat-sub">Explore</div>
-        <div class="cat-name">Women</div>
-      </div>
-      <span class="cat-arrow">→</span>
+    <div class="cat-card" style="background:#2a2820;">
+      <div class="cat-label"><span>02 categories</span>Women</div>
     </div>
-    <div class="cat-card">
-      <img src="{IMAGES['cat_men']}" alt="Men"/>
-      <div class="cat-info">
-        <div class="cat-sub">Explore</div>
-        <div class="cat-name">Men</div>
-      </div>
-      <span class="cat-arrow">→</span>
+    <div class="cat-card" style="background:#3a3632;">
+      <div class="cat-label"><span>01 category</span>Men</div>
     </div>
-    <div class="cat-card">
-      <img src="{IMAGES['cat_acc']}" alt="Accessories"/>
-      <div class="cat-info">
-        <div class="cat-sub">Explore</div>
-        <div class="cat-name">Accessories</div>
+    <div class="cat-card" style="background:#c9a96e;">
+      <div class="cat-label" style="color:#0f0f0d;text-shadow:none;">
+        <span style="color:rgba(15,15,13,0.5)">03 items</span>Accessories
       </div>
-      <span class="cat-arrow">→</span>
     </div>
-    <div class="cat-card">
-      <img src="{IMAGES['cat_sale']}" alt="Sale"/>
-      <div class="cat-info">
-        <div class="cat-sub">Up to 40% off</div>
-        <div class="cat-name">Sale</div>
-      </div>
-      <span class="cat-arrow">→</span>
+    <div class="cat-card" style="background:#1a1a18;">
+      <div class="cat-label"><span>Up to 40% off</span>Sale</div>
     </div>
   </div>
 </section>
 
 <!-- NEWSLETTER -->
 <section class="newsletter reveal">
-  <p class="nl-label">Stay connected</p>
-  <h2 class="nl-title">Join the <em>HAUS</em> community</h2>
-  <p class="nl-sub">New drops, exclusive access, and styling notes — straight to your inbox.</p>
-  <div class="nl-form">
+  <h2>Stay <em>in the loop</em></h2>
+  <p>New drops, exclusive access, and styling notes — straight to your inbox.</p>
+  <div class="newsletter-form">
     <input type="email" placeholder="your@email.com"/>
     <button>Subscribe</button>
   </div>
@@ -621,68 +407,60 @@ def build():
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-top">
-    <div>
-      <div class="f-brand-logo">{SITE_NAME}</div>
-      <p class="f-brand-desc">Slow fashion made with intention. Every piece tells a story — make it yours.</p>
-      <div class="f-social">
-        <a href="#" title="Instagram">In</a>
-        <a href="#" title="Pinterest">Pi</a>
-        <a href="#" title="TikTok">Tt</a>
-      </div>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo-f">HAUS</div>
+      <p>Slow fashion made with intention. Every piece tells a story — make it yours.</p>
     </div>
-    <div class="f-col">
+    
+    <div class="footer-col">
       <h5>Shop</h5>
-      <a href="#">Women</a><a href="#">Men</a><a href="#">Accessories</a><a href="#">Sale</a>
+      <a href="#">Women</a>
+<a href="#">Men</a>
+<a href="#">Accessories</a>
+<a href="#">Sale</a>
     </div>
-    <div class="f-col">
+
+    <div class="footer-col">
       <h5>Help</h5>
-      <a href="#">Shipping &amp; Returns</a><a href="#">Size Guide</a>
-      <a href="#">Contact Us</a><a href="#">FAQs</a>
+      <a href="#">Shipping & Returns</a>
+<a href="#">Size Guide</a>
+<a href="#">Contact Us</a>
+<a href="#">FAQs</a>
     </div>
-    <div class="f-col">
+
+    <div class="footer-col">
       <h5>Company</h5>
-      <a href="#">About {SITE_NAME}</a><a href="#">Sustainability</a>
-      <a href="#">Careers</a><a href="#">Press</a>
+      <a href="#">About HAUS</a>
+<a href="#">Sustainability</a>
+<a href="#">Careers</a>
+<a href="#">Press</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2025 {SITE_NAME}. All rights reserved.</p>
-    <span>Made with intention ✦</span>
+    <p>© 2025 HAUS. All rights reserved.</p>
+    <div class="social-links">
+      <a href="#">Instagram</a>
+<a href="#">Pinterest</a>
+<a href="#">TikTok</a>
+    </div>
   </div>
 </footer>
 
+
 <script>
 // Sticky nav
-window.addEventListener('scroll', () => {{
-  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
-}});
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
 
 // Scroll reveal
-const obs = new IntersectionObserver(entries => {{
-  entries.forEach(e => {{
-    if (e.isIntersecting) {{ e.target.classList.add('in'); obs.unobserve(e.target); }}
-  }});
-}}, {{ threshold: 0.07 }});
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.08 });
 document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
-
-// Tabs
-document.querySelectorAll('.tab').forEach(t => {{
-  t.addEventListener('click', () => {{
-    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-    t.classList.add('active');
-  }});
-}});
 </script>
 </body>
-</html>"""
-
-
-if __name__ == "__main__":
-    html = build()
-    with open("index.html", "w", encoding="utf-8") as f:
-        f.write(html)
-    size = len(html.encode())
-    print(f"✅  index.html generated — {size/1024:.1f} KB")
-    print(f"📸  Using {len(IMAGES)} real Unsplash images")
-    print(f"\n🚀  git add index.html && git commit -m 'v2 with images' && git push")
+</html>
