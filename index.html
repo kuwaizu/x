@@ -1,466 +1,470 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>HAUS — Wear What You Are</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-
-<style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --ink:#0f0f0d;
-  --cream:#f5f2ec;
-  --sand:#e8e3d9;
-  --stone:#b8b2a7;
-  --accent:#c9a96e;
-  --white:#ffffff;
-}
-html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);overflow-x:hidden;}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;
-  justify-content:space-between;padding:1.1rem 2.5rem;background:transparent;
-  transition:background 0.4s,backdrop-filter 0.4s;}
-nav.scrolled{background:rgba(245,242,236,0.92);backdrop-filter:blur(12px);
-  border-bottom:0.5px solid var(--sand);}
-.nav-left{display:flex;gap:2rem;}
-.nav-left a,.nav-right a{font-size:12px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--ink);text-decoration:none;opacity:0.6;transition:opacity 0.2s;}
-.nav-left a:hover,.nav-right a:hover{opacity:1;}
-.nav-logo{font-family:'Playfair Display',serif;font-size:22px;letter-spacing:6px;
-  position:absolute;left:50%;transform:translateX(-50%);}
-.nav-right{display:flex;gap:1.5rem;align-items:center;}
-.cart-dot{position:absolute;top:-3px;right:-5px;width:6px;height:6px;
-  background:var(--accent);border-radius:50%;}
-
-/* HERO */
-.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:70px;}
-.hero-left{background:var(--ink);display:flex;flex-direction:column;justify-content:flex-end;
-  padding:4rem 3rem;position:relative;overflow:hidden;}
-.hero-bg{position:absolute;inset:0;
-  background:radial-gradient(ellipse at 60% 30%,#2a2820 0%,var(--ink) 70%);}
-.hero-eyebrow{font-size:10px;letter-spacing:4px;text-transform:uppercase;
-  color:var(--accent);margin-bottom:1.5rem;position:relative;z-index:1;}
-.hero-title{font-family:'Playfair Display',serif;font-size:clamp(52px,7vw,88px);
-  font-weight:400;line-height:0.95;color:var(--white);position:relative;z-index:1;margin-bottom:2.5rem;}
-.hero-title em{font-style:italic;color:var(--accent);}
-.hero-sub{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.8;
-  max-width:300px;position:relative;z-index:1;margin-bottom:3rem;}
-.hero-actions{display:flex;gap:1rem;position:relative;z-index:1;flex-wrap:wrap;}
-.btn-gold{background:var(--accent);color:var(--ink);padding:14px 32px;font-size:11px;
-  letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;
-  font-family:'DM Sans',sans-serif;transition:transform 0.2s,box-shadow 0.2s;}
-.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(201,169,110,0.35);}
-.btn-ghost{background:transparent;color:var(--white);padding:14px 32px;font-size:11px;
-  letter-spacing:2px;text-transform:uppercase;border:0.5px solid rgba(255,255,255,0.25);
-  cursor:pointer;font-family:'DM Sans',sans-serif;transition:border-color 0.2s;}
-.btn-ghost:hover{border-color:rgba(255,255,255,0.7);}
-.hero-right{background:var(--sand);display:flex;flex-direction:column;}
-.hero-image-area{flex:1;display:flex;align-items:center;justify-content:center;padding:3rem;}
-.hero-figure{width:200px;animation:float 6s ease-in-out infinite;}
-@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
-.hero-stats{border-top:0.5px solid rgba(0,0,0,0.1);display:grid;grid-template-columns:1fr 1fr 1fr;}
-.stat{padding:1.4rem 1.2rem;border-right:0.5px solid rgba(0,0,0,0.1);}
-.stat:last-child{border-right:none;}
-.stat-num{font-family:'Playfair Display',serif;font-size:26px;margin-bottom:2px;}
-.stat-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);}
-
-/* MARQUEE */
-.marquee-wrap{background:var(--ink);color:var(--accent);padding:14px 0;overflow:hidden;white-space:nowrap;}
-.marquee-track{display:inline-flex;animation:marquee 22s linear infinite;}
-.marquee-track span{font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:0 3rem;}
-.marquee-track .dot{color:var(--stone);font-size:6px;align-self:center;}
-@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-
-/* PRODUCTS */
-.products-section{padding:5rem 2.5rem;}
-.section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3rem;}
-.section-label{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--stone);margin-bottom:0.5rem;}
-.section-heading{font-family:'Playfair Display',serif;font-size:36px;font-weight:400;}
-.view-all{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--stone);
-  cursor:pointer;border-bottom:0.5px solid var(--stone);padding-bottom:2px;text-decoration:none;}
-.view-all:hover{color:var(--ink);border-color:var(--ink);}
-.product-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--sand);}
-.product-card{background:var(--cream);cursor:pointer;overflow:hidden;}
-.card-image{background:var(--sand);aspect-ratio:2/3;display:flex;align-items:center;
-  justify-content:center;position:relative;overflow:hidden;
-  transition:transform 0.6s cubic-bezier(.25,.46,.45,.94);}
-.product-card:hover .card-image{transform:scale(1.03);}
-.card-overlay{position:absolute;inset:0;background:rgba(15,15,13,0.55);
-  display:flex;align-items:flex-end;justify-content:center;
-  padding-bottom:2rem;opacity:0;transition:opacity 0.3s;}
-.product-card:hover .card-overlay{opacity:1;}
-.card-overlay button{background:var(--accent);color:var(--ink);padding:11px 24px;
-  font-size:10px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;
-  font-family:'DM Sans',sans-serif;}
-.card-badge{position:absolute;top:14px;left:14px;background:var(--ink);color:var(--white);
-  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 9px;z-index:1;}
-.card-badge.sale{background:var(--accent);color:var(--ink);}
-.card-info{padding:1.2rem 1rem 1.5rem;}
-.card-name{font-size:14px;margin-bottom:5px;}
-.card-sub{font-size:11px;color:var(--stone);margin-bottom:10px;}
-.card-price{font-family:'Playfair Display',serif;font-size:16px;}
-.card-price .old{font-family:'DM Sans',sans-serif;font-size:12px;color:var(--stone);
-  text-decoration:line-through;margin-right:6px;}
-.card-colors{display:flex;gap:5px;margin-top:10px;}
-.swatch{width:12px;height:12px;border-radius:50%;}
-
-/* EDITORIAL */
-.editorial{display:grid;grid-template-columns:1fr 1fr;min-height:520px;}
-.editorial-img{background:var(--ink);display:flex;align-items:center;justify-content:center;}
-.editorial-content{background:var(--accent);display:flex;flex-direction:column;
-  justify-content:center;padding:5rem 4rem;}
-.editorial-content .eyebrow{font-size:10px;letter-spacing:4px;text-transform:uppercase;
-  color:rgba(15,15,13,0.5);margin-bottom:1.5rem;}
-.editorial-content h2{font-family:'Playfair Display',serif;font-size:44px;
-  font-weight:400;line-height:1.05;margin-bottom:1.5rem;}
-.editorial-content p{font-size:14px;line-height:1.9;color:rgba(15,15,13,0.65);
-  max-width:340px;margin-bottom:2.5rem;}
-.btn-dark{background:var(--ink);color:var(--white);padding:14px 32px;font-size:11px;
-  letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;
-  font-family:'DM Sans',sans-serif;align-self:flex-start;transition:opacity 0.2s;}
-.btn-dark:hover{opacity:0.75;}
-
-/* CATEGORIES */
-.categories{padding:5rem 2.5rem;}
-.cat-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:1fr 1fr;
-  gap:1px;background:var(--sand);height:520px;}
-.cat-card{display:flex;align-items:flex-end;padding:2rem;position:relative;
-  overflow:hidden;cursor:pointer;}
-.cat-card:first-child{grid-row:span 2;}
-.cat-label{position:relative;z-index:1;font-family:'Playfair Display',serif;
-  font-size:22px;color:var(--white);text-shadow:0 2px 12px rgba(0,0,0,0.4);}
-.cat-label span{display:block;font-family:'DM Sans',sans-serif;font-size:11px;
-  letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.65);
-  font-style:normal;margin-bottom:4px;}
-
-/* NEWSLETTER */
-.newsletter{background:var(--ink);padding:6rem 2.5rem;display:flex;
-  flex-direction:column;align-items:center;text-align:center;}
-.newsletter h2{font-family:'Playfair Display',serif;font-size:48px;color:var(--white);
-  font-weight:400;margin-bottom:1rem;}
-.newsletter h2 em{font-style:italic;color:var(--accent);}
-.newsletter p{font-size:14px;color:var(--stone);margin-bottom:2.5rem;}
-.newsletter-form{display:flex;max-width:460px;width:100%;}
-.newsletter-form input{flex:1;padding:14px 20px;background:rgba(255,255,255,0.07);
-  border:0.5px solid rgba(255,255,255,0.15);border-right:none;color:var(--white);
-  font-family:'DM Sans',sans-serif;font-size:14px;outline:none;}
-.newsletter-form input::placeholder{color:var(--stone);}
-.newsletter-form button{background:var(--accent);color:var(--ink);padding:14px 28px;
-  font-size:11px;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;
-  font-family:'DM Sans',sans-serif;white-space:nowrap;}
-
-/* FOOTER */
-footer{background:var(--ink);border-top:0.5px solid #1e1e1c;padding:4rem 2.5rem 2rem;}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
-.footer-brand .logo-f{font-family:'Playfair Display',serif;font-size:26px;
-  color:var(--white);letter-spacing:4px;margin-bottom:1rem;}
-.footer-brand p{font-size:13px;color:var(--stone);line-height:1.8;max-width:220px;}
-.footer-col h5{font-size:10px;letter-spacing:3px;text-transform:uppercase;
-  color:var(--stone);margin-bottom:1.2rem;}
-.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,0.5);
-  text-decoration:none;line-height:2.4;transition:color 0.2s;cursor:pointer;}
-.footer-col a:hover{color:var(--white);}
-.footer-bottom{border-top:0.5px solid #1e1e1c;padding-top:1.5rem;
-  display:flex;justify-content:space-between;align-items:center;}
-.footer-bottom p{font-size:12px;color:var(--stone);}
-.social-links{display:flex;gap:1.5rem;}
-.social-links a{font-size:12px;color:var(--stone);text-decoration:none;transition:color 0.2s;}
-.social-links a:hover{color:var(--accent);}
-
-/* REVEAL */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.7s ease,transform 0.7s ease;}
-.reveal.visible{opacity:1;transform:none;}
-
-/* RESPONSIVE */
-@media(max-width:900px){
-  .hero{grid-template-columns:1fr;}
-  .hero-left{min-height:55vh;}
-  .product-grid{grid-template-columns:repeat(2,1fr);}
-  .editorial{grid-template-columns:1fr;}
-  .cat-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto;height:auto;}
-  .cat-card:first-child{grid-row:span 1;}
-  .cat-card{min-height:200px;}
-  .footer-grid{grid-template-columns:1fr 1fr;}
-  .nav-left{display:none;}
-}
-@media(max-width:600px){
-  .hero-title{font-size:46px;}
-  .editorial-content{padding:3rem 2rem;}
-  .editorial-content h2{font-size:34px;}
-  .newsletter h2{font-size:32px;}
-  .footer-grid{grid-template-columns:1fr;}
-  .categories{padding:3rem 1.5rem;}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monroe Barber Studio | Classic Cuts & Clean Fades</title>
+  <meta
+    name="description"
+    content="Monroe Barber Studio offers sharp cuts, clean fades, beard trims, and a professional barbershop experience in Monroe, Iowa."
+  />
+  <link rel="preconnect" href="[fonts.googleapis.com](https://fonts.googleapis.com)" />
+  <link rel="preconnect" href="[fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin />
+  <link
+    href="[fonts.googleapis.com](https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap)"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <header class="site-header">
+    <nav class="navbar container">
+      <a href="#home" class="logo">Monroe Barber Studio</a>
 
-<!-- NAV -->
-<nav id="nav">
-  <div class="nav-left">
-    <a href="#">Women</a>
-    <a href="#">Men</a>
-    <a href="#">Collections</a>
-    <a href="#">Sale</a>
-  </div>
-  <div class="nav-logo">HAUS</div>
-  <div class="nav-right">
-    <a href="#">Search</a>
-    <a href="#" style="position:relative;">Bag (2)<span class="cart-dot"></span></a>
-  </div>
-</nav>
+      <ul class="nav-links">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-left">
-    <div class="hero-bg"></div>
-    <p class="hero-eyebrow">Summer Collection 2025</p>
-    <h1 class="hero-title">Dress<br>like you<br><em>mean it.</em></h1>
-    <p class="hero-sub">Slow fashion made to last. Organic materials, considered
-      silhouettes — for people who don't follow trends, they set them.</p>
-    <div class="hero-actions">
-      <button class="btn-gold">Shop Now</button>
-      <button class="btn-ghost">View Lookbook</button>
-    </div>
-  </div>
-  <div class="hero-right">
-    <div class="hero-image-area">
-      <svg class="hero-figure" viewBox="0 0 200 340" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="100" cy="52" rx="34" ry="38" fill="#c8c4bc" stroke="#a8a49c" stroke-width="0.5"/>
-        <path d="M58 90Q100 74 142 90L158 295Q100 308 42 295Z" fill="#c8c4bc" stroke="#a8a49c" stroke-width="0.5"/>
-        <path d="M58 90Q36 100 26 126L20 230Q36 235 48 225L52 138" fill="#c8c4bc" stroke="#a8a49c" stroke-width="0.5"/>
-        <path d="M142 90Q164 100 174 126L180 230Q164 235 152 225L148 138" fill="#c8c4bc" stroke="#a8a49c" stroke-width="0.5"/>
-        <line x1="100" y1="295" x2="80" y2="335" stroke="#a8a49c" stroke-width="2"/>
-        <line x1="100" y1="295" x2="120" y2="335" stroke="#a8a49c" stroke-width="2"/>
-        <rect x="64" y="330" width="36" height="9" rx="2" fill="#b8b4ac"/>
-        <rect x="104" y="330" width="36" height="9" rx="2" fill="#b8b4ac"/>
-      </svg>
-    </div>
-    <div class="hero-stats">
-      <div class="stat"><div class="stat-num">340+</div><div class="stat-lbl">Styles</div></div>
-      <div class="stat"><div class="stat-num">100%</div><div class="stat-lbl">Organic</div></div>
-      <div class="stat"><div class="stat-num">Free</div><div class="stat-lbl">Returns</div></div>
-    </div>
-  </div>
-</section>
+      <a href="tel:+16412592108" class="nav-cta">Call Now</a>
+    </nav>
+  </header>
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span>New Summer Arrivals</span><span class="dot">●</span><span>Free Shipping Over €80</span><span class="dot">●</span><span>Organic &amp; Sustainable</span><span class="dot">●</span><span>New Summer Arrivals</span><span class="dot">●</span><span>Free Shipping Over €80</span><span class="dot">●</span><span>Organic &amp; Sustainable</span><span class="dot">●</span><span>New Summer Arrivals</span><span class="dot">●</span><span>Free Shipping Over €80</span><span class="dot">●</span><span>Organic &amp; Sustainable</span><span class="dot">●</span><span>New Summer Arrivals</span><span class="dot">●</span><span>Free Shipping Over €80</span><span class="dot">●</span><span>Organic &amp; Sustainable</span><span class="dot">●</span>
-  </div>
-</div>
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div class="hero-text">
+          <p class="eyebrow">Barber Shop • Monroe, Iowa</p>
+          <h1>Sharp cuts. Clean fades. Classic barber service.</h1>
+          <p class="hero-description">
+            Modern grooming for men who want quality, consistency, and a clean,
+            comfortable barbershop experience every time they sit in the chair.
+          </p>
 
-<!-- PRODUCTS -->
-<section class="products-section reveal">
-  <div class="section-head">
-    <div>
-      <p class="section-label">Fresh in</p>
-      <h2 class="section-heading">New Arrivals</h2>
-    </div>
-    <a class="view-all" href="#">View all →</a>
-  </div>
-  <div class="product-grid">
-    
-    <div class="product-card">
-      <div class="card-image">
-        <span class="card-badge ">New</span>
-        <svg width="90" height="130" viewBox="0 0 90 130" xmlns="http://www.w3.org/2000/svg">
-          <rect x="15" y="10" width="60" height="110" rx="4" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8" opacity="0.5"/>
-          <ellipse cx="45" cy="35" rx="22" ry="24" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
-          <path d="M20 58Q45 46 70 58L76 120Q45 128 14 120Z" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
-        </svg>
-        <div class="card-overlay"><button>Add to Bag</button></div>
+          <div class="hero-buttons">
+            <a href="#contact" class="btn btn-primary">Book Appointment</a>
+            <a href="tel:+16412592108" class="btn btn-secondary">Call Now</a>
+          </div>
+
+          <div class="hero-highlights">
+            <div class="highlight">
+              <strong>Classic Cuts</strong>
+              <span>Clean, timeless barbering</span>
+            </div>
+            <div class="highlight">
+              <strong>Beard Care</strong>
+              <span>Sharp lines and fresh trims</span>
+            </div>
+            <div class="highlight">
+              <strong>Local Service</strong>
+              <span>Friendly shop, professional results</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-image-wrap">
+            <img
+              src="images/hero-barber.jpg"
+              alt="Barber cutting a client's hair in a modern barbershop"
+              class="hero-image"
+            />
+            <div class="hero-badge">
+              <span class="badge-small">Trusted Local Shop</span>
+              <strong>Clean service. Sharp results.</strong>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card-info">
-        <div class="card-name">Oversized Linen Shirt</div>
-        <div class="card-sub">Sand / Stone / Chalk</div>
-        <div class="card-price">€89</div>
-        <div class="card-colors"><div class="swatch" style="background:#d4cfc7;border:1px solid #bbb;"></div>
-<div class="swatch" style="background:#8c8880;border:1px solid #bbb;"></div>
-<div class="swatch" style="background:#f0ede8;border:1px solid #bbb;"></div></div>
+    </section>
+
+    <section class="info-strip">
+      <div class="container info-strip-grid">
+        <div class="info-box">
+          <span class="info-label">Phone</span>
+          <a href="tel:+16412592108">+1 (641) 259-2108</a>
+        </div>
+
+        <div class="info-box">
+          <span class="info-label">Address</span>
+          <p>111 W Washington St, Monroe, IA 50170</p>
+        </div>
+
+        <div class="info-box">
+          <span class="info-label">Hours</span>
+          <p>Mon - Fri: 9AM - 6PM | Sat: 10AM - 4PM</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="services section" id="services">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Services</p>
+          <h2>Professional cuts and grooming services</h2>
+          <p>
+            Straightforward services, clean results, and a barbershop experience
+            built around quality, consistency, and attention to detail.
+          </p>
+        </div>
+
+        <div class="services-grid improved-services">
+          <article class="service-card service-card-priced">
+            <div class="service-top">
+              <div>
+                <h3>Classic Haircut</h3>
+                <p class="service-meta">45 min</p>
+              </div>
+              <span class="service-price">$30</span>
+            </div>
+            <p>
+              A clean, tailored haircut with careful shaping and a polished finish
+              for everyday style.
+            </p>
+          </article>
+
+          <article class="service-card service-card-priced">
+            <div class="service-top">
+              <div>
+                <h3>Skin Fade</h3>
+                <p class="service-meta">50 min</p>
+              </div>
+              <span class="service-price">$35</span>
+            </div>
+            <p>
+              Smooth blending, sharp edges, and a fresh modern look finished with
+              precision.
+            </p>
+          </article>
+
+          <article class="service-card service-card-priced">
+            <div class="service-top">
+              <div>
+                <h3>Beard Trim</h3>
+                <p class="service-meta">25 min</p>
+              </div>
+              <span class="service-price">$20</span>
+            </div>
+            <p>
+              Beard shaping and cleanup designed to keep your lines neat, balanced,
+              and sharp.
+            </p>
+          </article>
+
+          <article class="service-card service-card-priced">
+            <div class="service-top">
+              <div>
+                <h3>Haircut + Beard</h3>
+                <p class="service-meta">60 min</p>
+              </div>
+              <span class="service-price">$45</span>
+            </div>
+            <p>
+              A complete grooming service combining a fresh cut and beard trim for
+              a full reset.
+            </p>
+          </article>
+
+          <article class="service-card service-card-priced">
+            <div class="service-top">
+              <div>
+                <h3>Kids Haircut</h3>
+                <p class="service-meta">30 min</p>
+              </div>
+              <span class="service-price">$25</span>
+            </div>
+            <p>
+              Comfortable, clean, and professional cuts for younger clients in a
+              relaxed setting.
+            </p>
+          </article>
+
+          <article class="service-card service-card-priced">
+            <div class="service-top">
+              <div>
+                <h3>Line Up</h3>
+                <p class="service-meta">15 min</p>
+              </div>
+              <span class="service-price">$15</span>
+            </div>
+            <p>
+              Quick detail work to keep your cut looking sharp between full barber
+              visits.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="about section" id="about">
+      <div class="container about-grid">
+        <div class="about-text">
+          <p class="eyebrow">About</p>
+          <h2>A neighborhood barbershop with a modern standard</h2>
+          <p>
+            Monroe Barber Studio is built around quality service, clean work,
+            and a barbershop atmosphere that feels comfortable from the moment
+            you walk in.
+          </p>
+          <p>
+            Whether you want a classic cut, a fresh fade, or a sharp beard trim,
+            the goal is always the same: consistent results, attention to
+            detail, and a style that suits you.
+          </p>
+        </div>
+
+        <div class="about-features">
+          <div class="feature-box">
+            <h3>Professional Service</h3>
+            <p>
+              Every appointment is handled with care, precision, and respect for
+              your time.
+            </p>
+          </div>
+
+          <div class="feature-box">
+            <h3>Clean Experience</h3>
+            <p>
+              A polished space and a smooth process that keeps things simple and
+              comfortable.
+            </p>
+          </div>
+
+          <div class="feature-box">
+            <h3>Consistent Results</h3>
+            <p>
+              Reliable cuts and grooming you can come back to with confidence.
+            </p>
+          </div>
+
+          <div class="feature-box">
+            <h3>Local Trust</h3>
+            <p>
+              A barbershop experience designed for the local community and built
+              on service.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery section" id="gallery">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Gallery</p>
+          <h2>Inside the studio</h2>
+          <p>
+            A clean visual presentation helps the business feel more real,
+            professional, and trusted from the first visit.
+          </p>
+        </div>
+
+        <div class="gallery-grid">
+          <div class="gallery-item gallery-large">
+            <img
+              src="images/gallery-1.jpg"
+              alt="Interior of a stylish barbershop"
+            />
+          </div>
+
+          <div class="gallery-item">
+            <img
+              src="images/gallery-2.jpg"
+              alt="Close-up of a fresh fade haircut"
+            />
+          </div>
+
+          <div class="gallery-item">
+            <img
+              src="images/gallery-3.jpg"
+              alt="Barber trimming a beard"
+            />
+          </div>
+
+          <div class="gallery-item">
+            <img
+              src="images/gallery-4.jpg"
+              alt="Professional barber tools on a counter"
+            />
+          </div>
+
+          <div class="gallery-item">
+            <img
+              src="images/gallery-5.jpg"
+              alt="Client getting a haircut in a modern barber chair"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="why-us section">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Why Choose Us</p>
+          <h2>Built for comfort, quality, and confidence</h2>
+        </div>
+
+        <div class="why-grid">
+          <div class="why-card">
+            <h3>Clean fades and sharp finishing</h3>
+            <p>
+              We focus on the details that make a cut feel fresh long after you
+              leave the shop.
+            </p>
+          </div>
+
+          <div class="why-card">
+            <h3>Easy contact and fast service</h3>
+            <p>
+              Straightforward booking, clear communication, and dependable
+              service for busy schedules.
+            </p>
+          </div>
+
+          <div class="why-card">
+            <h3>Classic barbershop feel</h3>
+            <p>
+              A welcoming local shop atmosphere with a modern visual standard
+              and professional approach.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="reviews section" id="reviews">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Reviews</p>
+          <h2>What clients appreciate most</h2>
+          <p>
+            Example testimonials for the portfolio version. Later you can
+            replace these with real client feedback.
+          </p>
+        </div>
+
+        <div class="reviews-grid">
+          <article class="review-card">
+            <p>
+              "Great attention to detail, clean shop, and one of the best fades
+              I have had in a long time."
+            </p>
+            <h3>James R.</h3>
+          </article>
+
+          <article class="review-card">
+            <p>
+              "Easy to contact, friendly service, and the haircut came out
+              exactly how I wanted."
+            </p>
+            <h3>Marcus T.</h3>
+          </article>
+
+          <article class="review-card">
+            <p>
+              "Professional, fast, and consistent. A solid local spot for a
+              fresh cut and beard trim."
+            </p>
+            <h3>Daniel S.</h3>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact section" id="contact">
+      <div class="container contact-grid">
+        <div class="contact-info">
+          <p class="eyebrow">Contact</p>
+          <h2>Book your next cut</h2>
+          <p>
+            Ready for a clean, professional look? Call now or stop by the shop
+            to get started.
+          </p>
+
+          <div class="contact-list">
+            <div class="contact-item">
+              <span class="contact-label">Phone</span>
+              <a href="tel:+16412592108">+1 (641) 259-2108</a>
+            </div>
+
+            <div class="contact-item">
+              <span class="contact-label">Address</span>
+              <p>111 W Washington St, Monroe, IA 50170</p>
+            </div>
+
+            <div class="contact-item">
+              <span class="contact-label">Hours</span>
+              <p>Mon - Fri: 9:00 AM - 6:00 PM<br />Sat: 10:00 AM - 4:00 PM</p>
+            </div>
+          </div>
+        </div>
+
+        <form class="contact-form" action="#" method="post">
+          <input type="text" placeholder="Your Name" />
+          <input type="tel" placeholder="Phone Number" />
+          <input type="text" placeholder="Preferred Service" />
+          <textarea placeholder="Tell us what you're looking for"></textarea>
+          <button type="submit" class="btn btn-primary">Request Appointment</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="final-cta section">
+      <div class="container">
+        <div class="final-cta-box">
+          <p class="eyebrow">Book Your Visit</p>
+          <h2>Walk in sharp. Leave sharper.</h2>
+          <p class="final-cta-text">
+            Whether you need a fresh fade, a classic cut, or a clean beard trim,
+            Monroe Barber Studio delivers professional service in a relaxed local
+            setting. Call today and book your next appointment.
+          </p>
+
+          <div class="final-cta-actions">
+            <a href="tel:+16412592108" class="btn btn-primary">Call Now</a>
+            <a href="#contact" class="btn btn-secondary">Request Appointment</a>
+          </div>
+
+          <div class="final-cta-details">
+            <div class="final-cta-detail">
+              <span class="final-cta-label">Phone</span>
+              <p>+1 (641) 259-2108</p>
+            </div>
+
+            <div class="final-cta-detail">
+              <span class="final-cta-label">Hours</span>
+              <p>Mon - Fri: 9AM - 6PM | Sat: 10AM - 4PM</p>
+            </div>
+
+            <div class="final-cta-detail">
+              <span class="final-cta-label">Location</span>
+              <p>111 W Washington St, Monroe, IA</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div>
+        <a href="#home" class="footer-logo">Monroe Barber Studio</a>
+        <p>Classic service. Modern standard.</p>
+      </div>
+
+      <div class="footer-links">
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#contact">Contact</a>
       </div>
     </div>
-
-    <div class="product-card">
-      <div class="card-image">
-        
-        <svg width="90" height="130" viewBox="0 0 90 130" xmlns="http://www.w3.org/2000/svg">
-          <rect x="15" y="10" width="60" height="110" rx="4" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8" opacity="0.5"/>
-          <ellipse cx="45" cy="35" rx="22" ry="24" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
-          <path d="M20 58Q45 46 70 58L76 120Q45 128 14 120Z" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
-        </svg>
-        <div class="card-overlay"><button>Add to Bag</button></div>
-      </div>
-      <div class="card-info">
-        <div class="card-name">Wide Leg Trousers</div>
-        <div class="card-sub">Oat / Charcoal</div>
-        <div class="card-price">€115</div>
-        <div class="card-colors"><div class="swatch" style="background:#e8e4dc;border:1px solid #bbb;"></div>
-<div class="swatch" style="background:#3a3a38;border:1px solid #bbb;"></div></div>
-      </div>
-    </div>
-
-    <div class="product-card">
-      <div class="card-image">
-        <span class="card-badge sale">−20%</span>
-        <svg width="90" height="130" viewBox="0 0 90 130" xmlns="http://www.w3.org/2000/svg">
-          <rect x="15" y="10" width="60" height="110" rx="4" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8" opacity="0.5"/>
-          <ellipse cx="45" cy="35" rx="22" ry="24" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
-          <path d="M20 58Q45 46 70 58L76 120Q45 128 14 120Z" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
-        </svg>
-        <div class="card-overlay"><button>Add to Bag</button></div>
-      </div>
-      <div class="card-info">
-        <div class="card-name">Ribbed Knit Sweater</div>
-        <div class="card-sub">Ecru / Mocha / Slate</div>
-        <div class="card-price"><span class="old">€95</span>€76</div>
-        <div class="card-colors"><div class="swatch" style="background:#f2ede4;border:1px solid #bbb;"></div>
-<div class="swatch" style="background:#7a5c42;border:1px solid #bbb;"></div>
-<div class="swatch" style="background:#6e7478;border:1px solid #bbb;"></div></div>
-      </div>
-    </div>
-
-    <div class="product-card">
-      <div class="card-image">
-        <span class="card-badge ">Limited</span>
-        <svg width="90" height="130" viewBox="0 0 90 130" xmlns="http://www.w3.org/2000/svg">
-          <rect x="15" y="10" width="60" height="110" rx="4" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8" opacity="0.5"/>
-          <ellipse cx="45" cy="35" rx="22" ry="24" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
-          <path d="M20 58Q45 46 70 58L76 120Q45 128 14 120Z" fill="#dddad3" stroke="#c4c1ba" stroke-width="0.8"/>
-        </svg>
-        <div class="card-overlay"><button>Add to Bag</button></div>
-      </div>
-      <div class="card-info">
-        <div class="card-name">Structured Tote</div>
-        <div class="card-sub">Tan / Black</div>
-        <div class="card-price">€145</div>
-        <div class="card-colors"><div class="swatch" style="background:#c4a882;border:1px solid #bbb;"></div>
-<div class="swatch" style="background:#1a1a18;border:1px solid #bbb;"></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- EDITORIAL -->
-<section class="editorial reveal">
-  <div class="editorial-img">
-    <svg width="260" height="380" viewBox="0 0 260 380" xmlns="http://www.w3.org/2000/svg">
-      <rect width="260" height="380" fill="#1a1a18"/>
-      <ellipse cx="130" cy="82" rx="46" ry="50" fill="#2e2e2b" stroke="#3a3a37" stroke-width="1"/>
-      <path d="M76 132Q130 115 184 132L204 348Q130 363 56 348Z" fill="#2e2e2b" stroke="#3a3a37" stroke-width="1"/>
-      <path d="M76 132Q52 144 40 174L34 276Q53 282 66 272L72 196" fill="#2e2e2b" stroke="#3a3a37" stroke-width="1"/>
-      <path d="M184 132Q208 144 220 174L226 276Q207 282 194 272L188 196" fill="#2e2e2b" stroke="#3a3a37" stroke-width="1"/>
-      <rect x="156" y="168" width="86" height="30" fill="#c9a96e" opacity="0.9"/>
-      <text x="199" y="187" text-anchor="middle" font-family="sans-serif" font-size="7"
-            letter-spacing="2" fill="#0f0f0d">SUMMER '25</text>
-    </svg>
-  </div>
-  <div class="editorial-content">
-    <p class="eyebrow">Our philosophy</p>
-    <h2>Fashion that doesn't cost the planet</h2>
-    <p>Every piece is made from certified organic cotton, natural linen,
-       or recycled fibres. No harmful dyes. No exploitative labour.
-       Just clothes you can wear with a clear conscience.</p>
-    <button class="btn-dark">Read our story →</button>
-  </div>
-</section>
-
-<!-- CATEGORIES -->
-<section class="categories reveal">
-  <div class="section-head">
-    <div>
-      <p class="section-label">Browse by</p>
-      <h2 class="section-heading">Shop Categories</h2>
-    </div>
-  </div>
-  <div class="cat-grid">
-    <div class="cat-card" style="background:#2a2820;">
-      <div class="cat-label"><span>02 categories</span>Women</div>
-    </div>
-    <div class="cat-card" style="background:#3a3632;">
-      <div class="cat-label"><span>01 category</span>Men</div>
-    </div>
-    <div class="cat-card" style="background:#c9a96e;">
-      <div class="cat-label" style="color:#0f0f0d;text-shadow:none;">
-        <span style="color:rgba(15,15,13,0.5)">03 items</span>Accessories
-      </div>
-    </div>
-    <div class="cat-card" style="background:#1a1a18;">
-      <div class="cat-label"><span>Up to 40% off</span>Sale</div>
-    </div>
-  </div>
-</section>
-
-<!-- NEWSLETTER -->
-<section class="newsletter reveal">
-  <h2>Stay <em>in the loop</em></h2>
-  <p>New drops, exclusive access, and styling notes — straight to your inbox.</p>
-  <div class="newsletter-form">
-    <input type="email" placeholder="your@email.com"/>
-    <button>Subscribe</button>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-grid">
-    <div class="footer-brand">
-      <div class="logo-f">HAUS</div>
-      <p>Slow fashion made with intention. Every piece tells a story — make it yours.</p>
-    </div>
-    
-    <div class="footer-col">
-      <h5>Shop</h5>
-      <a href="#">Women</a>
-<a href="#">Men</a>
-<a href="#">Accessories</a>
-<a href="#">Sale</a>
-    </div>
-
-    <div class="footer-col">
-      <h5>Help</h5>
-      <a href="#">Shipping & Returns</a>
-<a href="#">Size Guide</a>
-<a href="#">Contact Us</a>
-<a href="#">FAQs</a>
-    </div>
-
-    <div class="footer-col">
-      <h5>Company</h5>
-      <a href="#">About HAUS</a>
-<a href="#">Sustainability</a>
-<a href="#">Careers</a>
-<a href="#">Press</a>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2025 HAUS. All rights reserved.</p>
-    <div class="social-links">
-      <a href="#">Instagram</a>
-<a href="#">Pinterest</a>
-<a href="#">TikTok</a>
-    </div>
-  </div>
-</footer>
-
-
-<script>
-// Sticky nav
-window.addEventListener('scroll', () => {
-  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
-});
-
-// Scroll reveal
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
-  });
-}, { threshold: 0.08 });
-document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
-</script>
+  </footer>
 </body>
 </html>
